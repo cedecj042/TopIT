@@ -10,8 +10,7 @@ return new class extends Migration
     {
         Schema::create('tables', function (Blueprint $table) {
             $table->id('table_id');
-            $table->foreignId('section_id')->nullable()->constrained('sections', 'section_id')->onDelete('set null');
-            $table->foreignId('subsection_id')->nullable()->constrained('subsections', 'subsection_id')->onDelete('set null');
+            $table->morphs('tableable');
             $table->json('content');
             $table->string('caption');
             $table->string('image_path');
@@ -20,8 +19,7 @@ return new class extends Migration
 
         Schema::create('figures', function (Blueprint $table) {
             $table->id('figure_id');
-            $table->foreignId('section_id')->nullable()->constrained('sections', 'section_id')->onDelete('set null');
-            $table->foreignId('subsection_id')->nullable()->constrained('subsections', 'subsection_id')->onDelete('set null');
+            $table->morphs('figureable');
             $table->string('description');
             $table->json('metadata');
             $table->string('caption');
@@ -31,8 +29,7 @@ return new class extends Migration
 
         Schema::create('codes', function (Blueprint $table) {
             $table->id('code_id');
-            $table->foreignId('section_id')->nullable()->constrained('sections', 'section_id')->onDelete('set null');
-            $table->foreignId('subsection_id')->nullable()->constrained('subsections', 'subsection_id')->onDelete('set null');
+            $table->morphs('codeable');
             $table->string('description');
             $table->json('metadata');
             $table->string('caption');

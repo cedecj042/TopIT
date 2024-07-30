@@ -11,10 +11,7 @@ class Figure extends Model
 {
     use HasFactory;
 
-    public function sections(){
-        return $this->belongsTo(Section::class,'section_id','section_id');
-    }
-    public function subsections(){
-        return $this->belongsTo(Subsection::class,'subsection_id','subsection_id');
+    public function figureable(){
+        return $this->morphTo();
     }
 }

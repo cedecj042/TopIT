@@ -24,13 +24,13 @@ class Section extends Model
     }
 
     public function tables(){
-        return $this->hasMany(Table::class,'section_id');
+        return $this->morphMany(Table::class,'tableable');
     }
     public function codes(){
-        return $this->hasMany(Code::class,'section_id');
+        return $this->morphMany(Code::class,'codeable');
     }
     public function figures(){
-        return $this->hasMany(Figure::class,'section_id');
+        return $this->morphMany(Figure::class,'figureable');
     }
     public function questions(){
         return $this->hasMany(Question::class,'section_id');

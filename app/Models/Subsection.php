@@ -18,13 +18,13 @@ class Subsection extends Model
         return $this->belongsTo(Section::class,'section_id','section_id');
     }
     public function tables(){
-        return $this->hasMany(Table::class,'subsection_id');
+        return $this->morphMany(Table::class,'tableable');
     }
     public function codes(){
-        return $this->hasMany(Code::class,'subsection_id');
+        return $this->morphMany(Code::class,'codeable');
     }
     public function figures(){
-        return $this->hasMany(Figure::class,'subsection_id');
+        return $this->morphMany(Figure::class,'figureable');
     }
     public function questions(){
         return $this->hasMany(Question::class,'section_id');

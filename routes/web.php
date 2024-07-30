@@ -19,5 +19,5 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
 # Admin
-Route::get('/admin-login', [AdminController::class, 'showLogin'])->name('login');
-Route::get('/admin-reviewer', [AdminController::class, 'showReviewer'])->name('reviewer');
+Route::get('/admin-login', [AdminController::class, 'showLogin'])->name('admin-login');
+Route::get('/admin-reviewer', [AdminController::class, 'showReviewer'])->name('admin-reviewer');

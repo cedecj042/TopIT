@@ -12,7 +12,7 @@
                     </a>
                 </li>
                 <li class="nav-item w-100">
-                    <a href="{{ route('reviewer') }}" class="nav-link text-white px-0" id="reviewer-link"
+                    <a href="{{ route('admin-reviewer') }}" class="nav-link text-white px-0" id="reviewer-link"
                         data-page="reviewer">
                         <i class="bi bi-journal-bookmark-fill h6"></i> <span
                             class="ms-1 d-none d-sm-inline fs-6">Reviewer</span>

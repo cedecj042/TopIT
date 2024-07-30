@@ -70,7 +70,7 @@ class AuthController extends Controller
             // if (Auth::check())
             //     return redirect()->route('dash');
             // else
-            return redirect()->intended(route('home'));
+            return redirect()->intended(route('dashboard'));
 
         }
         return back()->withErrors([

@@ -4,9 +4,14 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\AdminController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// Route::get('/', function () {
+//     return view('welcome');
+// });
+
+Route::view('/', 'student.dashboard')->name('dashboard');
+
+Route::view('/reviewer', 'student.reviewer')->name('reviewer');
+Route::view('/test', 'student.test')->name('test');
 
 Route::get('/register', [AuthController::class, 'showRegistration'])->name('register');
 Route::post('/register', [AuthController::class, 'register']);
@@ -16,7 +21,6 @@ Route::post('/login', [AuthController::class, 'login']);
 
 Route::get('/logout', [AuthController::class, 'logout']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
-
 
 
 

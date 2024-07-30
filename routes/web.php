@@ -18,6 +18,8 @@ Route::get('/logout', [AuthController::class, 'logout']);
 Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 
+
+
 # Admin
 Route::get('/admin-login', [AdminController::class, 'showLogin'])->name('admin-login');
 Route::get('/admin-reviewer', [AdminController::class, 'showReviewer'])->name('admin-reviewer');

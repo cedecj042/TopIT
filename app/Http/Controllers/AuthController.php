@@ -11,33 +11,46 @@ use Illuminate\Support\Facades\Auth;
 class AuthController extends Controller
 {
     //
-    public function showRegistration(){
+    public function showRegistration()
+    {
         return view('auth.register');
     }
 
-    public function register(Request $request){
-
-
-        $request->validate([
-            'firstname'=> 'required|string|max:255',
-            'lastname'=> 'required|string|max:255',
-            'name' => 'required|string|max:255|unique:users',
-            'password' => 'required|string|min:8|confirmed',
-        ]);
-
-        $user = User::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
-
-        UserProfile::create([
-            'user_firstname' => $request->firstname,
-            'user_lastname' => $request->lastname,
-            'user_id' => $user->id
-        ]);
-
-        return redirect()->route('login');
+    public function register(Request $request)
+    {
+        \Log::info('Register method called');
+        try {
+            $validated = $request->validate([
+                'firstname' => 'required|string|max:255',
+                'lastname' => 'required|string|max:255',
+                'name' => 'required|string|max:255|unique:users',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:8|confirmed',
+            ]);
+    
+            \Log::info('Validation passed', $validated);
+    
+            $user = User::create([
+                'name' => $request->name,
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+            ]);
+    
+            \Log::info('User created', ['user_id' => $user->id]);
+    
+            UserProfile::create([
+                'user_firstname' => $request->firstname,
+                'user_lastname' => $request->lastname,
+                'user_id' => $user->id
+            ]);
+    
+            \Log::info('UserProfile created');
+    
+            return redirect()->route('login')->with('success', 'Registration successful');
+        } catch (\Exception $e) {
+            \Log::error('Registration failed: ' . $e->getMessage());
+            return back()->withInput()->withErrors(['error' => 'Registration failed: ' . $e->getMessage()]);
+        }
     }
     public function showLogin()
     {
@@ -45,7 +58,8 @@ class AuthController extends Controller
     }
 
 
-    public function login(Request $request){
+    public function login(Request $request)
+    {
         $credentials = $request->validate([
             'name' => 'required|string',
             'password' => 'required|string',
@@ -56,7 +70,7 @@ class AuthController extends Controller
             // if (Auth::check())
             //     return redirect()->route('dash');
             // else
-                return redirect()->intended(route('home'));
+            return redirect()->intended(route('home'));
 
         }
         return back()->withErrors([

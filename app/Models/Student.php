@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 
-class UserProfile extends Model
+class Student extends Model
 {
     use HasFactory;
 
     protected $fillable = [
         'firstname',
         'lastname',
+        'theta_score',
         'profile_image',
         'birthdate',
         'age',

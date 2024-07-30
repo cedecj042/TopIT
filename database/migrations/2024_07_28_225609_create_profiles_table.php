@@ -11,17 +11,27 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('user_profiles', function (Blueprint $table) {
-            $table->id('user_profile_id');
+        Schema::create('students', function (Blueprint $table) {
+            $table->id('student_id');
             $table->foreignId('user_id')->references('user_id')->on('users')->cascadeOnDelete();
             $table->string('firstname');
             $table->string('lastname');
+            $table->float('theta_score');
             $table->string('profile_image');
             $table->date('birthdate');
             $table->integer('age');
             $table->string('address');
             $table->string('school');
-            $table->year('year');
+            $table->integer('school_year');
+            $table->timestamps();
+        });
+        Schema::create('coordinators', function (Blueprint $table) {
+            $table->id('coordinator_id');
+            $table->foreignId('user_id')->references('user_id')->on('users')->cascadeOnDelete();
+            $table->string('firstname');
+            $table->string('lastname');
+            $table->string('profile_image');
+            $table->dateTime('last_login');
             $table->timestamps();
         });
     }
@@ -31,6 +41,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('user_profile');
+        Schema::dropIfExists('students');
+        Schema::dropIfExists('coordinators');
+
     }
 };

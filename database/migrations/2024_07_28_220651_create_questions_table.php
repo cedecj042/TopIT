@@ -39,23 +39,17 @@ return new class extends Migration
             $table->timestamps();
         });
 
-        Schema::create('items',function (Blueprint $table){
-            $table->id('item_id');
+        Schema::create('question_options',function (Blueprint $table){
+            $table->id('question_option_id');
             $table->foreignId('question_id')->references('question_id')->on('questions')->cascadeOnDelete();
             $table->foreignId('option_id')->references('option_id')->on('options')->cascadeOnDelete();
-            $table->boolean('is_correct');
             $table->integer('order');
-            $table->float('selection_frequency');
-            $table->float('point_biserial_correlation');
         });
-        Schema::create('test_items', function (Blueprint $table) {
-            $table->id('test_item_id');
+        Schema::create('test_questions', function (Blueprint $table) {
+            $table->id('test_question_id');
+            $table->foreignId('question_id')->references('question_id')->on('questions')->cascadeOnDelete();
             $table->foreignId('test_id')->references('test_id')->on('tests')->cascadeOnDelete();
-            $table->foreignId('item_id')->references('item_id')->on('items')->cascadeOnDelete();
-            $table->string('user_answer');
-            $table->boolean('is_correct');
             $table->integer('order');
-            $table->time('response_time');
             $table->timestamps();
         });
 

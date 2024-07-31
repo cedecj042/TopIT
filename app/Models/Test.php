@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 class Test extends Model
 {
     use HasFactory;
-
+    protected $primaryKey = 'test_id';
     public function users(){
         return $this->belongsTo(User::class,'user_id','user_id');
     }

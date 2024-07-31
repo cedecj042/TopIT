@@ -10,6 +10,7 @@ use App\Models\Subsection;
 class Table extends Model
 {
     use HasFactory;
+    protected $primaryKey = 'table_id';
     public function tableable(){
         return $this->morphTo();
     }

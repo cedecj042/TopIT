@@ -10,7 +10,7 @@ use App\Models\Section;
 class Lesson extends Model
 {
     use HasFactory;
-
+    protected $primaryKey='lesson_id';
     public function modules(){
         return $this->belongsTo(Module::class,'module_id','module_id');
     }

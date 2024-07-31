@@ -9,7 +9,7 @@ use App\Models\Lesson;
 class Module extends Model
 {
     use HasFactory;
-
+    protected $primaryKey='module_id';
     public function lessons(){
         return $this->hasMany(Lesson::class,'module_id');
     }

@@ -10,7 +10,7 @@ use App\Models\Subsection;
 class Code extends Model
 {
     use HasFactory;
-
+    protected $primaryKey='code_id';
     public function codeable(){
         return $this->morphTo();
     }

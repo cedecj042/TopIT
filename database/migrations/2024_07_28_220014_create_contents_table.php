@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id('table_id');
             $table->morphs('tableable');
             $table->json('content');
-            $table->string('caption');
+            $table->string('caption')->nullable();
             $table->string('image_path');
             $table->timestamps();
         });
@@ -21,8 +21,8 @@ return new class extends Migration
             $table->id('figure_id');
             $table->morphs('figureable');
             $table->string('description');
-            $table->json('metadata');
-            $table->string('caption');
+            $table->json('metadata')->nullable();
+            $table->string('caption')->nullable();
             $table->string('image_path');
             $table->timestamps();
         });
@@ -31,8 +31,8 @@ return new class extends Migration
             $table->id('code_id');
             $table->morphs('codeable');
             $table->string('description');
-            $table->json('metadata');
-            $table->string('caption');
+            $table->json('metadata')->nullable();
+            $table->string('caption')->nullable();
             $table->string('image_path');
             $table->timestamps();
         });

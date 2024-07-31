@@ -17,13 +17,14 @@ class User extends Authenticatable
      * @var array<int, string>
      */
     protected $fillable = [
-        'name',
-        'firstname',
-        'lastname',
+        'userable_id',
+        'userable_type',
         'username',
         'email',
         'password',
     ];
+    protected $table = 'users';
+    protected $primaryKey = 'user_id';
 
     /**
      * The attributes that should be hidden for serialization.
@@ -51,5 +52,15 @@ class User extends Authenticatable
     public function userable()
     {
         return $this->morphTo();
-    }   
+    } 
+      
+    public function isAdmin()
+    {
+        return $this->userable instanceof Admin;
+    }
+
+    public function isStudent()
+    {
+        return $this->userable instanceof Student;
+    }
 }

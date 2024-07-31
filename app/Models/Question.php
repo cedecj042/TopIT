@@ -15,7 +15,7 @@ use App\Models\Test;
 class Question extends Model
 {
     use HasFactory;
-
+    protected $primaryKey='question_id';
     public function sections(){
        return $this->belongsTo(Section::class,'section_id','section_id');    
     }

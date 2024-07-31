@@ -9,20 +9,21 @@ use App\Models\User;
 class Student extends Model
 {
     use HasFactory;
-
+    protected $primaryKey = 'student_id';
     protected $fillable = [
         'firstname',
         'lastname',
         'theta_score',
         'profile_image',
         'birthdate',
+        'gender',
         'age',
         'address',
         'school',
-        'year',
+        'school_year'
     ];
 
-    public function users(){
+    public function user(){
         return $this->morphOne(User::class,'userable');
     }
 }

@@ -9,7 +9,7 @@ use App\Models\Question;
 class Option extends Model
 {
     use HasFactory;
-
+    protected $primaryKey='option_id';
     public function questions(){
         return $this->belongsToMany(Question::class,'question_options','option_id','question_id');
     }

@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Coordinator extends Model
+class Admin extends Model
 {
     use HasFactory;
-
+    protected $primaryKey='admin_id';
     protected $fillable = [
         'firstname',
         'lastname',
@@ -16,7 +16,7 @@ class Coordinator extends Model
         'last_login'
     ];
 
-    public function users(){
+    public function user(){
         return $this->morphOne(User::class,'userable');
     }
 }

@@ -13,21 +13,20 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id('student_id');
-            $table->foreignId('user_id')->references('user_id')->on('users')->cascadeOnDelete();
             $table->string('firstname');
             $table->string('lastname');
             $table->float('theta_score');
-            $table->string('profile_image');
-            $table->date('birthdate');
-            $table->integer('age');
-            $table->string('address');
+            $table->string('profile_image')->nullable();
+            $table->date('birthdate')->nullable();
+            $table->string('gender')->nullable();
+            $table->integer('age')->nullable();
+            $table->string('address')->nullable();
             $table->string('school');
             $table->integer('school_year');
             $table->timestamps();
         });
-        Schema::create('coordinators', function (Blueprint $table) {
-            $table->id('coordinator_id');
-            $table->foreignId('user_id')->references('user_id')->on('users')->cascadeOnDelete();
+        Schema::create('admins', function (Blueprint $table) {
+            $table->id('admin_id'); 
             $table->string('firstname');
             $table->string('lastname');
             $table->string('profile_image');

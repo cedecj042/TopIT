@@ -10,7 +10,7 @@ use App\Models\Subsection;
 class Figure extends Model
 {
     use HasFactory;
-
+    protected $primaryKey='figure_id';
     public function figureable(){
         return $this->morphTo();
     }

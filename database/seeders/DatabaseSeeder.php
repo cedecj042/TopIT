@@ -5,19 +5,29 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use App\Models\Admin;
+use Illuminate\Support\Facades\Hash;
 
 class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
      */
-    public function run(): void
+    public function run()
     {
-        // User::factory(10)->create();
+        $admin = Admin::create([
+            'firstname' => 'Jungkook',
+            'lastname' => 'Jeon',
+            'profile_image' => 'profile-circle.png', 
+            'last_login' => now(),
+        ]);
 
-        User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
+        User::create([
+            'username' => 'jjk123',
+            'email' => 'jjk@gmail.com',
+            'password' => Hash::make('usjr1234'), 
+            'userable_id' => $admin->admin_id,
+            'userable_type' => Admin::class,
         ]);
     }
 }

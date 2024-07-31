@@ -18,9 +18,11 @@ class AdminAccess
     {
         $user = Auth::user();
 
-        if (!Auth::check() || !($user->userable instanceof Admin)) {
-            return redirect()->route('login')->withErrors('You do not have access to this page.');
+        if (!$user || !$user->userable instanceof \App\Models\Admin) {
+            Auth::logout();
+            return redirect()->route('admin-login')->withErrors('You do not have access to this page.');
         }
+
         return $next($request);
     }
 }

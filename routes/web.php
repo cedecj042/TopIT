@@ -31,10 +31,11 @@ Route::middleware('student')->group(function () {
     Route::view('/profile', 'student.ui.profile')->name('profile');
 });
 
-
-
 // Admin
 Route::get('/admin-login', [AdminController::class, 'showLogin'])->name('admin-login');
+Route::post('/admin-login', [AdminController::class, 'login']);
+
 Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin-reviewer', [AdminController::class, 'showReviewer'])->name('admin-reviewer');
+    Route::get('/admin-dashboard', [AdminController::class, 'showDashboard'])->name('admin-dashboard');
+        Route::get('/admin-reviewer', [AdminController::class, 'showReviewer'])->name('admin-reviewer');
 });

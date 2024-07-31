@@ -10,7 +10,7 @@
                     <h2 class="text-center mb-4">
                         <img src="{{ asset('assets\logo.svg') }}" alt="TopIT Logo" width="150" height="50">
                     </h2>
-                    <form method="POST" action="">
+                    <form method="POST" action="{{ route('admin-login') }}">
                         @csrf
                         <div class="mb-1 input-group-lg">
                             <label for="username" class="form-label auth-labels text-white">Username</label>

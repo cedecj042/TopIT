@@ -28,6 +28,7 @@ Route::middleware('student')->group(function () {
     Route::view('/dashboard', 'student.ui.dashboard')->name('dashboard');
     Route::view('/reviewer', 'student.ui.reviewer')->name('reviewer');
     Route::view('/test', 'student.ui.test')->name('test');
+    Route::view('/profile', 'student.ui.profile')->name('profile');
 });
 
 

@@ -45,7 +45,7 @@ class StudentController extends Controller
                 if (isset($validated['profile_image'])) {
                     $profileImage = $validated['profile_image'];
                     $imageName = time() . '.' . $profileImage->extension();
-                    $profileImage->storeAs('public/profile_images', $imageName);
+                    $profileImage->storeAs('', $imageName, 'profile_images');
                 } else {
                     $imageName = null;
                 }

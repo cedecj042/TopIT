@@ -12,6 +12,7 @@
     },
     "dependencies": {
         "bootstrap": "^5.3.3",
+        "chart.js": "^4.4.3",
         "material-symbols": "^0.21.2"
     }
 }

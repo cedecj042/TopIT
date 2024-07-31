@@ -6,22 +6,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
 
-class UserProfile extends Model
+class Student extends Model
 {
     use HasFactory;
-
+    protected $primaryKey = 'student_id';
     protected $fillable = [
         'firstname',
         'lastname',
+        'theta_score',
         'profile_image',
         'birthdate',
+        'gender',
         'age',
         'address',
         'school',
-        'year',
+        'school_year'
     ];
 
-    public function users(){
-        return $this->belongsTo(User::class,'user_id','user_id');
+    public function user(){
+        return $this->morphOne(User::class,'userable');
     }
 }

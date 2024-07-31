@@ -2,19 +2,20 @@
 
 namespace App\Models;
 
+use Carbon\Traits\Options;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Section;
 use App\Models\Subsection;
 use App\Models\QuestionType;
 use App\Models\QuestionCategory;
-use App\Models\Item;
-use App\Models\Response;
+use App\Models\Option;
+use App\Models\Test;
 
 class Question extends Model
 {
     use HasFactory;
-
+    protected $primaryKey='question_id';
     public function sections(){
        return $this->belongsTo(Section::class,'section_id','section_id');    
     }
@@ -28,10 +29,10 @@ class Question extends Model
     public function questionCategory(){
         return $this->belongsTo(QuestionCategory::class,'question_category_id','question_category_id');
     }
-    public function items(){
-        return $this->belongsTo(Item::class,'question_option_id','question_option_id');
+    public function options(){
+        return $this->belongsToMany(Option::class,'question_options','question_id','option_id');
     }
-    public function responses(){
-        return $this->hasMany(Response::class,'question_id','question_id');
+    public function tests(){
+        return $this->belongsToMany(Test::class,'test_questions','question_id','test_id');
     }
 }

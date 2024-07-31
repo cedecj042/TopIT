@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
-use App\Models\UserProfile;
+use App\Models\Student;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -13,7 +13,7 @@ class AuthController extends Controller
     //
     public function showRegistration()
     {
-        return view('auth.register');
+        return view('student.auth.register');
     }
 
     public function register(Request $request)
@@ -31,16 +31,18 @@ class AuthController extends Controller
             \Log::info('Validation passed', $validated);
     
             $user = User::create([
-                'name' => $request->name,
+                'firstname' => $request->firstname,
+                'lastname'=> $request->lastname,
+                'username'=> $request->username,
                 'email' => $request->email,
                 'password' => Hash::make($request->password),
             ]);
     
             \Log::info('User created', ['user_id' => $user->id]);
     
-            UserProfile::create([
-                'user_firstname' => $request->firstname,
-                'user_lastname' => $request->lastname,
+            Student::create([
+                'firstname' => $request->firstname,
+                'lastname' => $request->lastname,
                 'user_id' => $user->id
             ]);
     
@@ -54,7 +56,7 @@ class AuthController extends Controller
     }
     public function showLogin()
     {
-        return view('auth.login');
+        return view('student.auth.login');
     }
 
 

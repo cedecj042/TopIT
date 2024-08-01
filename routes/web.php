@@ -40,4 +40,5 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin-dashboard', [AdminController::class, 'showDashboard'])->name('admin-dashboard');
     Route::get('/admin-reviewer', [ReviewerController::class, 'showReviewer'])->name('admin-reviewer');
     Route::post('/admin-reviewer', [ReviewerController::class, 'uploadReviewer'])->name('upload-reviewer');
+    Route::get('/admin-question-bank', [AdminController::class, 'showQuestionBank'])->name('admin-question-bank');
 });

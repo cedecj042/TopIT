@@ -37,5 +37,10 @@ Route::post('/admin-login', [AdminController::class, 'login']);
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin-dashboard', [AdminController::class, 'showDashboard'])->name('admin-dashboard');
-        Route::get('/admin-reviewer', [AdminController::class, 'showReviewer'])->name('admin-reviewer');
+    Route::get('/admin-reviewer', [AdminController::class, 'showReviewer'])->name('admin-reviewer');
+
+    Route::get('/admin-question-bank', [AdminController::class, 'showQuestionBank'])->name('admin-question-bank');
+    // Route::post('/admin-question-bank', [AdminController::class, 'storeQuestion']);
+    // Route::put('/admin-question-bank/{id}', [AdminController::class, 'updateQuestion']);
+    // Route::delete('/admin-question-bank/{id}', [AdminController::class, 'deleteQuestion']);
 });

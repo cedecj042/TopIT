@@ -19,7 +19,7 @@
                 </a>
             </li>
             <li class="nav-item w-100">
-                <a href="#" class="nav-link text-white py-3 ps-4 d-flex align-items-center gap-1" id="test-link"
+                <a href="{{ route('admin-question-bank') }}" class="nav-link text-white py-3 ps-4 d-flex align-items-center gap-1" id="test-link"
                     data-page="test">
                     <span class="material-symbols-outlined">quiz</span> <span
                         class="ms-1 d-none d-sm-inline fs-6">Question Bank</span>

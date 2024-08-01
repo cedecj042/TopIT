@@ -11,6 +11,7 @@ use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
 class StudentsTable extends DataTableComponent
 {
     protected $model = Student::class;
+    public $selectedSchoolYear = 'all';
 
     public function configure(): void
     {
@@ -30,10 +31,10 @@ class StudentsTable extends DataTableComponent
             //         $query->where('firstname', 'like', '%' . $searchTerm . '%')
             //               ->orWhere('lastname', 'like', '%' . $searchTerm . '%');
             //     }),
-           
-                Column::make('First Name', 'firstname')->searchable(),
-            
-                Column::make('Last Name', 'lastname')->searchable(),
+
+            Column::make('First Name', 'firstname')->searchable(),
+
+            Column::make('Last Name', 'lastname')->searchable(),
             Column::make('Theta Score', 'theta_score')
                 ->sortable(),
             Column::make('School', 'school')
@@ -42,10 +43,11 @@ class StudentsTable extends DataTableComponent
                 ->sortable(),
             Column::make('Created At', 'created_at')
                 ->sortable(),
-            // Column::make('Actions')
-                // ->label(
-                //     fn($row) => view('components.view-profile-button', ['studentId' => $row->student_id])
-                // ),
+            Column::make('Details')
+                ->label(
+                    fn($row) => '<a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#profileModal-' . $row->student_id . '">View Profile</a>'
+                )
+                ->html(),
         ];
     }
 
@@ -64,4 +66,13 @@ class StudentsTable extends DataTableComponent
                 }),
         ];
     }
+
+//     public function getUniqueSchoolYears()
+//     {
+//         return Student::distinct()->orderBy('school_year', 'desc')->pluck('school_year')->toArray();
+//     }
+//     public function updatedSelectedSchoolYear($value)
+// {
+//     $this->emit('schoolYearChanged', $value);
+// }
 }

@@ -29,6 +29,7 @@ class AdminController extends Controller
 
         if (Auth::attempt(['username' => $request->username, 'password' => $request->password])) {
             $user = Auth::user();
+            $request->session()->regenerate();
             \Log::info('Admin authenticated successfully.', ['user_id' => $user->user_id]);
 
             if ($user->userable_type === 'App\Models\Admin') {

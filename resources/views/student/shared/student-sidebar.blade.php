@@ -13,7 +13,7 @@
             </li>
             <li class="nav-item w-100">
                 <a href="{{ route('profile') }}" class="nav-link text-dark py-3 ps-4 d-flex align-items-center gap-1" id="test"
-                    data-page="test">
+                    data-page="profile">
                     <span class="material-symbols-outlined">person</span> <span
                         class="ms-1 d-none d-sm-inline fs-6">Profile</span>
                 </a>
@@ -45,7 +45,6 @@
     document.addEventListener('DOMContentLoaded', function () {
         const navLinks = document.querySelectorAll('#menu .nav-link');
         const currentPage = '{{ Route::currentRouteName() }}';
-
         function updateNavLinks(clickedLink) {
             navLinks.forEach(link => {
                 if (link === clickedLink) {

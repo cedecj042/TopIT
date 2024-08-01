@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ReviewerController;
 use App\Http\Controllers\Student\StudentController;
 use Illuminate\Support\Facades\Route;
 
@@ -37,5 +38,6 @@ Route::post('/admin-login', [AdminController::class, 'login']);
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin-dashboard', [AdminController::class, 'showDashboard'])->name('admin-dashboard');
-        Route::get('/admin-reviewer', [AdminController::class, 'showReviewer'])->name('admin-reviewer');
+    Route::get('/admin-reviewer', [ReviewerController::class, 'showReviewer'])->name('admin-reviewer');
+    Route::post('/admin-reviewer', [ReviewerController::class, 'uploadReviewer'])->name('upload-reviewer');
 });

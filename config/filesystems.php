@@ -35,7 +35,7 @@ return [
             'root' => storage_path('app'),
             'throw' => false,
         ],
-
+        
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
@@ -59,6 +59,12 @@ return [
             'driver' => 'local',
             'root' => storage_path('app/public/profile_images'),
             'url' => '/storage/profile_images',
+            'visibility' => 'public',
+        ],
+        'pdfs' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/pdfs'),
+            'url' => '/storage/pdfs',
             'visibility' => 'public',
         ],
 

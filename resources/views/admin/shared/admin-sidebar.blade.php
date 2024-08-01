@@ -12,7 +12,7 @@
                 </a>
             </li>
             <li class="nav-item w-100">
-                <a href="{{ route('reviewer') }}" class="nav-link text-white py-3 ps-4 d-flex align-items-center gap-1"
+                <a href="{{ route('admin-reviewer') }}" class="nav-link text-white py-3 ps-4 d-flex align-items-center gap-1"
                     id="reviewer-link" data-page="reviewer">
                     <span class="material-symbols-outlined">description</span>
                     <span class="ms-1 d-none d-sm-inline fs-6">Reviewer</span>

@@ -29,5 +29,20 @@ class DatabaseSeeder extends Seeder
             'userable_id' => $admin->admin_id,
             'userable_type' => Admin::class,
         ]);
+
+        $admin = Admin::create([
+            'firstname' => 'admin',
+            'lastname' => 'admin',
+            'profile_image' => 'profile-circle.png', 
+            'last_login' => now(),
+        ]);
+
+        User::create([
+            'username' => 'admin',
+            'email' => 'admin@email.com',
+            'password' => Hash::make('usjr1234'), 
+            'userable_id' => $admin->admin_id,
+            'userable_type' => Admin::class,
+        ]);
     }
 }

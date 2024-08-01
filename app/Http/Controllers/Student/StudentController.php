@@ -113,6 +113,7 @@ class StudentController extends Controller
 
             if ($user->userable_type === 'App\Models\Student') {
                 \Log::info('Authenticated user is a Student.', ['user_id' => $user->user_id]);
+                $request->session()->regenerate();
                 return redirect()->intended('dashboard');
             } else {
                 Auth::logout();

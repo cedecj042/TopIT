@@ -10,6 +10,7 @@ class QuestionCategory extends Model
 {
     use HasFactory;
     protected $primaryKey='question_category_id';
+    protected $table = 'question_category';
     
     public function questions(){
         return $this->hasMany(Question::class,'question_category_id');

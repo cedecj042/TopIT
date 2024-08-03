@@ -5,6 +5,9 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Student;
+use App\Models\Question;
+
 
 class AdminController extends Controller
 {
@@ -44,11 +47,6 @@ class AdminController extends Controller
         ])->withInput();
     }
 
-    public function showDashboard()
-    {
-        return view('admin.ui.dashboard');
-    }
-
     public function logout(Request $request)
     {
         Auth::logout();
@@ -58,4 +56,68 @@ class AdminController extends Controller
 
         return redirect()->route('admin-login');
     }
+    public function showReviewer()
+    {
+        return view('admin.ui.reviewer');
+    }
+    public function showDashboard()
+    {
+        $students = Student::all();
+        $school_years = Student::distinct()->pluck('school_year')->toArray();
+        return view('admin.ui.dashboard', compact('students', 'school_years'));
+    }
+
+    # Question Bank
+
+    public function showQuestionBank()
+    {
+        $questions = Question::with('questionType', 'questionCategory')->get();
+        return view('admin.ui.question-bank', compact('questions'));
+    }
+
+    // public function storeQuestion(Request $request)
+    // {
+    //     $validated = $request->validate([
+    //         'question_type_id' => 'required|exists:question_types,question_type_id',
+    //         'question_category_id' => 'required|exists:question_categories,question_category_id',
+    //         'difficulty_level' => 'required|integer',
+    //         'content' => 'required|string',
+    //         'discrimination_index' => 'required|numeric',
+    //         'guess_factor' => 'required|numeric',
+    //     ]);
+
+    //     Question::create($validated);
+
+    //     return redirect()->route('admin-question-bank')->with('success', 'Question added successfully.');
+    // }
+
+    // public function updateQuestion(Request $request, $id)
+    // {
+    //     $question = Question::findOrFail($id);
+
+    //     $validated = $request->validate([
+    //         'question_type_id' => 'required|exists:question_types,question_type_id',
+    //         'question_category_id' => 'required|exists:question_categories,question_category_id',
+    //         'difficulty_level' => 'required|integer',
+    //         'content' => 'required|string',
+    //         'discrimination_index' => 'required|numeric',
+    //         'guess_factor' => 'required|numeric',
+    //     ]);
+
+    //     $question->update($validated);
+
+    //     return redirect()->route('admin-question-bank')->with('success', 'Question updated successfully.');
+    // }
+
+    // public function deleteQuestion($id)
+    // {
+    //     $question = Question::findOrFail($id);
+    //     $question->delete();
+
+    //     return redirect()->route('admin-question-bank')->with('success', 'Question deleted successfully.');
+    // }
+
+
+
+
 }

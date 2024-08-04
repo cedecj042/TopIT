@@ -19,10 +19,6 @@ class Question extends Model
     public function sections(){
        return $this->belongsTo(Section::class,'section_id','section_id');    
     }
-    public function subsection(){
-        return $this->belongsTo(Subsection::class,'subsection_id','subsection_id');
-    }
-
     public function questionType(){
         return $this->belongsTo(QuestionType::class,'question_type_id','question_type_id');
     }

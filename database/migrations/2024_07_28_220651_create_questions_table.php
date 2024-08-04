@@ -27,15 +27,13 @@ return new class extends Migration
         });
         Schema::create('questions', function (Blueprint $table) {
             $table->id('question_id');
-            $table->foreignID('section_id')->references('section_id')->on('sections')->cascadeOnDelete();
-            $table->foreignId('subsection_id')->references('subsection_id')->on('subsections')->cascadeOnDelete();
+            $table->foreignID('course_id')->references('course_id')->on('courses')->cascadeOnDelete();
             $table->foreignId('question_type_id')->references('question_type_id')->on('question_types')->cascadeOnDelete();
             $table->foreignId('question_category_id')->references('question_category_id')->on('question_category')->cascadeOnDelete();
             $table->float('difficulty_numeric');
             $table->string('difficulty_level');
-            $table->json('content');
+            $table->string('question');
             $table->float('discrimination_index');
-            $table->float('guess_factor');
             $table->timestamps();
         });
 
@@ -52,8 +50,7 @@ return new class extends Migration
             $table->integer('order');
             $table->timestamps();
         });
-
-
+        
 
     }
 

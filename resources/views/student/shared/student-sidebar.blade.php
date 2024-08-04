@@ -19,10 +19,10 @@
                 </a>
             </li>
             <li class="nav-item w-100">
-                <a href="{{ route('reviewer') }}" class="nav-link text-dark py-3 ps-4 d-flex align-items-center gap-1"
-                    id="reviewer-link" data-page="reviewer">
+                <a href="{{ route('course') }}" class="nav-link text-dark py-3 ps-4 d-flex align-items-center gap-1"
+                    id="reviewer-link" data-page="course">
                     <span class="material-symbols-outlined">description</span>
-                    <span class="ms-1 d-none d-sm-inline fs-6">Reviewer</span>
+                    <span class="ms-1 d-none d-sm-inline fs-6">Courses</span>
                 </a>
             </li>
             <li class="nav-item w-100">

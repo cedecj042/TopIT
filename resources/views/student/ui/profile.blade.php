@@ -22,7 +22,6 @@
                         <div class="py-3 w-100">
                             <h2>{{Auth::user()->userable->firstname}} {{Auth::user()->userable->lastname}}</h2>
                             <span>Student</span>
-                            <p>Current Theta Score: {{Auth::user()->userable->theta_score}}</p>
                             <hr>
                             <div>
                                 <h5>Personal Details</h5>
@@ -34,6 +33,8 @@
                                 <p>Year: {{Auth::user()->userable->school_year}}</p>
                             </div>
                         </div>
+
+                        <div></div>
                     </div>
                     <hr />
 

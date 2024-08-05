@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\Pdf;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Http;
 
 class CourseController extends Controller
 {
@@ -69,7 +70,6 @@ class CourseController extends Controller
 
             \Log::info('File stored at: ' . $filePath);
 
-
             // Save file information to the database
             $pdf = Pdf::create([
                 'course_id' => $request->course_id,
@@ -89,60 +89,59 @@ class CourseController extends Controller
 
             \Log::info('PDF saved to database: ', $pdf->toArray());
 
-            // Send the PDF to FastAPI for processing
-            $fastapiResponse = $this->sendPdfToFastApi($fullPath);
+            // Send PDF to FastAPI
+            try {
+                $pdfContent = file_get_contents($fullPath);
+                $response = Http::attach(
+                    'file', $pdfContent, $fileName
+                )->post('http://127.0.0.1:8001/upload');
 
-            if ($fastapiResponse['status'] == 'error') {
-                return redirect()->back()->withErrors(['error' => $fastapiResponse['message']]);
+                if ($response->successful()) {
+                    $fastapiResponse = $response->json();
+                    \Log::info('FastAPI response: ', $fastapiResponse);
+
+                    return redirect()->back()->with('success', 'PDF uploaded, processed, and sent to FastAPI successfully!');
+                } else {
+                    \Log::error('FastAPI request failed: ' . $response->body());
+                    return redirect()->back()->withErrors(['error' => 'Failed to process PDF with FastAPI.']);
+                }
+            } catch (\Exception $e) {
+                \Log::error('Error sending PDF to FastAPI: ' . $e->getMessage());
+                return redirect()->back()->withErrors(['error' => 'An error occurred while processing the PDF.']);
             }
-
-            return redirect()->back()->with('success', 'PDF uploaded and processed successfully! Images saved in: ' . $fastapiResponse['images_dir']);
         } else {
             \Log::error('No file found in the request');
             return redirect()->back()->withErrors(['pdf_file' => 'No file was uploaded.']);
         }
     }
 
-    private function sendPdfToFastApi($pdfFilePath)
-    {
-        $client = new \GuzzleHttp\Client();
-
-        try {
-            // Ensure the file exists before sending
-            if (!file_exists($pdfFilePath)) {
-                throw new \Exception("File not found: " . $pdfFilePath);
-            }
-
-            $response = $client->request('POST', 'http://127.0.0.1:8000/upload-pdf/', [
-                'multipart' => [
-                    [
-                        'name' => 'file',
-                        'contents' => fopen($pdfFilePath, 'r'),
-                        'filename' => basename($pdfFilePath)
-                    ]
-                ]
-            ]);
-
-            $body = json_decode($response->getBody()->getContents(), true);
-
-            return [
-                'status' => 'success',
-                'message' => $body['message'],
-                'images_dir' => $body['images_dir']
-            ];
-        } catch (\GuzzleHttp\Exception\RequestException $e) {
-            \Log::error('Error communicating with FastAPI: ' . $e->getMessage());
-            return [
-                'status' => 'error',
-                'message' => 'Failed to process PDF on FastAPI server.'
-            ];
-        } catch (\Exception $e) {
-            \Log::error('General error: ' . $e->getMessage());
-            return [
-                'status' => 'error',
-                'message' => $e->getMessage()
-            ];
-        }
+    public function deletePdf($id)
+{
+    $pdf = Pdf::findOrFail($id);
+    
+    // Delete the PDF file
+    $pdfPath = storage_path('app/' . $pdf->file_path);
+    if (file_exists($pdfPath)) {
+        unlink($pdfPath);
     }
 
+    // Delete the images via FastAPI
+    $pdfName = pathinfo($pdf->file_name, PATHINFO_FILENAME);
+    try {
+        $response = Http::delete("http://127.0.0.1:800/delete/{$pdfName}");
+        
+        if ($response->successful()) {
+            \Log::info('FastAPI delete response: ' . $response->body());
+        } else {
+            \Log::error('FastAPI delete request failed: ' . $response->body());
+        }
+    } catch (\Exception $e) {
+        \Log::error('Error deleting images via FastAPI: ' . $e->getMessage());
+    }
+
+    // Delete the database record
+    $pdf->delete();
+
+    return redirect()->back()->with('success', 'PDF and associated images deleted successfully');
+}
 }

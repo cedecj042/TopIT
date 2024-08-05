@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Admin\PdfController;
 use App\Http\Controllers\Student\StudentController;
 use Illuminate\Support\Facades\Route;
 
@@ -22,7 +23,7 @@ Route::middleware('auth')->group(function () {
 
 Route::middleware('student')->group(function () {
     Route::view('/dashboard', 'student.ui.dashboard')->name('dashboard');
-    Route::view('/reviewer', 'student.ui.reviewer')->name('reviewer');
+    Route::view('/course', 'student.ui.course')->name('course');
     Route::view('/test', 'student.ui.test')->name('test');
     Route::view('/profile', 'student.ui.profile')->name('profile');
 });
@@ -36,6 +37,7 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin-course', [CourseController::class, 'showCourse'])->name('admin-course');
     Route::post('/admin-course/add', [CourseController::class, 'addCourse'])->name('add-course');
     Route::get('/admin-course/{course_id}', [CourseController::class, 'showCourseDetail'])->name('admin-course-detail');
-    Route::post('/admin-course/upload', [CourseController::class, 'uploadPdf'])->name('upload-pdf');
+    Route::post('/admin-course/pdf/upload', [PdfController::class, 'uploadPdf'])->name('upload-pdf');
+    Route::delete('/admin-course/pdf/delete/{id}', [PdfController::class, 'deletePdf'])->name('delete-pdf');
     Route::get('/admin-question-bank', [AdminController::class, 'showQuestionBank'])->name('admin-question-bank');
 });

@@ -27,7 +27,6 @@ class CourseTable extends DataTableComponent
             Column::make('Title', 'title')->searchable(),
             Column::make('Description', 'description'),
             Column::make('Created At', 'created_at')->sortable(),
-            Column::make('Updated At', 'updated_at')->sortable(),
             Column::make('View PDFs')
                 ->label(function ($row) {
                     return '<a href="' . route('admin-course-detail', ['course_id' => $row->course_id]). '" class="btn btn-primary">View Pdfs</a>';

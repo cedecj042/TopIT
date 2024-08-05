@@ -26,7 +26,7 @@
                             <h5 class="modal-title" id="addCourseLabel">Add Course</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form method="POST" action="{{ route('add-course') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('add-course') }}">
                             @csrf
                             <div class="modal-body">
                                 <div class="mb-3">
@@ -37,11 +37,6 @@
                                     <label for="courseDescription" class="form-label fs-6">Course Description</label>
                                     <textarea type="text" class="form-control" id="courseDescription" name="course_desc"
                                         required></textarea>
-                                </div>
-                                <div class="mb-3">
-                                    <label for="materialFile" class="form-label fs-6">Select file to upload</label>
-                                    <input type="file" class="form-control" id="materialFile" name="pdf_file"
-                                        accept="application/pdf" required>
                                 </div>
                             </div>
                             <div class="modal-footer">

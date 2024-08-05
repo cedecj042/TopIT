@@ -23,7 +23,7 @@ class StudentsTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make('Student ID', 'student_id')
+            Column::make('ID', 'student_id')
                 ->sortable(),
             // Column::make('Full Name')
             //     ->label(fn($row) => $row->firstname . ' ' . $row->lastname),
@@ -35,11 +35,10 @@ class StudentsTable extends DataTableComponent
             Column::make('First Name', 'firstname')->searchable(),
 
             Column::make('Last Name', 'lastname')->searchable(),
-            Column::make('Theta Score', 'theta_score')
-                ->sortable(),
+            //Column::make('Theta Score', 'theta_score')->sortable(),
             Column::make('School', 'school')
                 ->sortable(),
-            Column::make('School Year', 'school_year')
+            Column::make('Year', 'school_year')
                 ->sortable(),
             Column::make('Created At', 'created_at')
                 ->sortable(),

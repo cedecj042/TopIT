@@ -17,44 +17,6 @@
                         </div>
                     </div>
                 </div>
-
-
-                {{-- @foreach ($students as $student)
-                    <!-- Modal -->
-                    <div class="modal fade" id="profileModal-{{ $student->student_id }}" tabindex="-1"
-                        aria-labelledby="profileModalLabel-{{ $student->student_id }}" aria-hidden="true">
-                        <div class="modal-dialog modal-lg modal-dialog-centered">
-                            <div class="modal-content">
-                                <div class="modal-header">
-                                    <h5 class="modal-title" id="profileModalLabel-{{ $student->student_id }}">Student
-                                        Profile</h5>
-                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                        aria-label="Close"></button>
-                                </div>
-                                <div class="modal-body">
-                                    <div class="text-center">
-                                        <img src="{{ $student->profile_image }}" alt="profile"
-                                            class="img-fluid rounded-circle" style="width: 150px; height: 150px;">
-                                    </div>
-                                    <p><strong>Name:</strong> {{ $student->firstname }} {{ $student->lastname }}</p>
-                                    <p><strong>Birthdate:</strong> {{ $student->birthdate }}</p>
-                                    <p><strong>Gender:</strong> {{ $student->gender }}</p>
-                                    <p><strong>Age:</strong> {{ $student->age }}</p>
-                                    <p><strong>Address:</strong> {{ $student->address }}</p>
-                                    <p><strong>School:</strong> {{ $student->school }}</p>
-                                    <p><strong>School Year:</strong> {{ $student->school_year }}</p>
-                                    <p><strong>Theta Score:</strong> {{ $student->theta_score }}</p>
-                                    <p><strong>Created At:</strong> {{ $student->created_at }}</p>
-                                </div>
-                                <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach --}}
-
-                {{-- <div class="row mt-4"> --}}
                 <div class="row w-100 px-5 mb-3">
                     <h5 class="fw-semibold">Theta Scores</h5>
                     <div class="mb-4">

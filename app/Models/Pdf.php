@@ -4,19 +4,20 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Module;
+use App\Models\Course;
 class Pdf extends Model
 {
     use HasFactory;
 
     protected $primaryKey='pdf_id';
     protected $fillable = [
+        'course_id',
         'file_name',
         'file_path',
         'uploaded_by',
     ];
 
-    public function modules(){
-        return $this->hasMany(Module::class,'pdf_id');
+    public function courses(){
+        return $this->belongsTo(Course::class,'course_id');
     }
 }

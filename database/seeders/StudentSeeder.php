@@ -19,7 +19,6 @@ class StudentSeeder extends Seeder
         $student = Student::create([
             'firstname' => 'Kyo',
             'lastname' => 'Sohma',
-            'theta_score'=>0.0,
             'birthdate' => '2002-10-12',
             'age' => '21',
             'gender' => 'Male',
@@ -40,7 +39,6 @@ class StudentSeeder extends Seeder
         $student = Student::create([
             'firstname' => 'Yuki',
             'lastname' => 'Sohma',
-            'theta_score'=>0.0,
             'birthdate' => '2005-11-12',
             'age' => '21',
             'gender' => 'Male',
@@ -61,7 +59,6 @@ class StudentSeeder extends Seeder
         $student = Student::create([
             'firstname' => 'Tohru',
             'lastname' => 'Honda',
-            'theta_score'=>0.0,
             'birthdate' => '2004-05-20',
             'age' => '21',
             'gender' => 'Female',
@@ -82,7 +79,6 @@ class StudentSeeder extends Seeder
         $student = Student::create([
             'firstname' => 'Namjoon',
             'lastname' => 'Kim',
-            'theta_score'=>0.0,
             'birthdate' => '1998-10-12',
             'age' => '26',
             'gender' => 'Male',
@@ -103,7 +99,6 @@ class StudentSeeder extends Seeder
         $student = Student::create([
             'firstname' => 'Stephanie',
             'lastname' => 'Gomez',
-            'theta_score'=>0.0,
             'birthdate' => '2002-10-12',
             'age' => '21',
             'gender' => 'Female',
@@ -124,7 +119,6 @@ class StudentSeeder extends Seeder
         $student = Student::create([
             'firstname' => 'Taehyung',
             'lastname' => 'Kim',
-            'theta_score'=>0.0,
             'birthdate' => '1999-10-12',
             'age' => '23',
             'gender' => 'Male',

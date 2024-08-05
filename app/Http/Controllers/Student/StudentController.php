@@ -53,7 +53,6 @@ class StudentController extends Controller
                 $student = new Student([
                     'firstname' => $validated['firstname'],
                     'lastname' => $validated['lastname'],
-                    'theta_score'=>0.0,
                     'birthdate' => $validated['birthdate'] ?? null,
                     'age' => $validated['birthdate'] ? Carbon::parse($validated['birthdate'])->age : null,
                     'gender' => $validated['gender'] ?? null,

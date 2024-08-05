@@ -13,11 +13,11 @@ return new class extends Migration
     {
         Schema::create('tests', function (Blueprint $table) {
             $table->id('test_id');
+            $table->foreignId('user_id')->references('user_id')->on('users')->cascadeOnDelete();
+            $table->foreignId('course_id')->references('course_id')->on('courses')->cascadeOnDelete();
             $table->time('start_time');
             $table->time('end_time');
-            $table->float('theta_score');
-            $table->integer('total_questions'); 
-            $table->foreignId('user_id')->references('user_id')->on('users')->cascadeOnDelete();
+            $table->integer('total_items'); 
             $table->timestamps();
         });
 

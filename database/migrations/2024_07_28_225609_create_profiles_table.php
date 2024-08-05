@@ -15,7 +15,6 @@ return new class extends Migration
             $table->id('student_id');
             $table->string('firstname');
             $table->string('lastname');
-            $table->float('theta_score');
             $table->string('profile_image')->nullable();
             $table->date('birthdate')->nullable();
             $table->string('gender')->nullable();
@@ -33,6 +32,14 @@ return new class extends Migration
             $table->dateTime('last_login');
             $table->timestamps();
         });
+        Schema::create('student_course_thetas', function (Blueprint $table) {
+            $table->id('student_course_theta_id');
+            $table->foreignId('student_id')->references('student_id')->on('students')->cascadeOnDelete();
+            $table->foreignId('course_id')->references('course_id')->on('courses')->cascadeOnDelete();
+            $table->float('theta_score');
+            $table->timestamps();
+        });
+
     }
 
     /**
@@ -42,6 +49,6 @@ return new class extends Migration
     {
         Schema::dropIfExists('students');
         Schema::dropIfExists('coordinators');
-
+        Schema::dropIfExists('student_course_thetas');
     }
 };

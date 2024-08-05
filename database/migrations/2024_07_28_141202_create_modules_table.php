@@ -11,16 +11,24 @@ return new class extends Migration
      */
     public function up(): void
     {
+        Schema::create('courses', function (Blueprint $table) {
+            $table->id('course_id');
+            $table->string('title');
+            $table->string('description');
+            $table->timestamps();
+        });
         Schema::create('pdfs', function (Blueprint $table) {
             $table->id('pdf_id');
+            $table->foreignId('course_id')->references('course_id')->on('courses')->cascadeOnDelete();
             $table->string('file_name');
             $table->string('file_path');
             $table->string('uploaded_by');
             $table->timestamps();
         });
+
         Schema::create('modules', function (Blueprint $table) {
             $table->id('module_id');
-            $table->foreignId('pdf_id')->references('pdf_id')->on('pdfs')->cascadeOnDelete();
+            $table->foreignId('course_id')->references('course_id')->on('courses')->cascadeOnDelete();
             $table->string('title');
             $table->json('content');
             $table->timestamps();
@@ -60,6 +68,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::dropIfExists('pdfs');
+        Schema::dropIfExists('courses');
         Schema::dropIfExists('modules');
         Schema::dropIfExists('lessons');
         Schema::dropIfExists('sections');

@@ -41,4 +41,11 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin-reviewer', [ReviewerController::class, 'showReviewer'])->name('admin-reviewer');
     Route::post('/admin-reviewer', [ReviewerController::class, 'uploadReviewer'])->name('upload-reviewer');
     Route::get('/admin-question-bank', [AdminController::class, 'showQuestionBank'])->name('admin-question-bank');
+    Route::get('/admin-users', [AdminController::class, 'showUsers'])->name('admin-users');
+    Route::delete('/admin-users/{user}', [AdminController::class, 'destroy'])->name('admin-users.destroy');
+    Route::post('/admin/add-coordinator', [AdminController::class, 'addCoordinator'])->name('admin.add-coordinator');
+    Route::get('/admin-profile', [AdminController::class, 'showProfile'])->name('admin-profile');
+    Route::get('/admin-studentprofile/{student_id}', [AdminController::class, 'showStudentProfile'])->name('admin-studentprofile');
+
+
 });

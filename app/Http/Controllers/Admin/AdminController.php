@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use App\Models\Student;
+use App\Models\Admin;
 use App\Models\Question;
+use App\Models\User;
 
 
 class AdminController extends Controller
@@ -75,49 +78,64 @@ class AdminController extends Controller
         return view('admin.ui.question-bank', compact('questions'));
     }
 
-    // public function storeQuestion(Request $request)
+    public function showUsers()
+    {
+        $users = User::all();
+        return view('admin.ui.users', compact('users'));
+    }
+
+    public function destroy(User $user)
+    {
+        $user->delete();
+        return redirect()->route('admin-users')->with('success', 'User deleted successfully');
+    }
+
+    public function addCoordinator(Request $request)
+    {
+        $request->validate([
+            'firstname' => 'required|string|max:255',
+            'lastname' => 'required|string|max:255',
+            'username' => 'required|string|max:255|unique:users',
+            'email' => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed',
+            'profile_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        $admin = Admin::create([
+            'firstname' => $request->firstname,
+            'lastname' => $request->lastname,
+            'profile_image' => $request->hasFile('profile_image')
+                ? $request->file('profile_image')->store('profile_images', 'public')
+                : 'profile-circle.png',
+            'last_login' => now(),
+        ]);
+
+        User::create([
+            'username' => $request->username,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+            'userable_id' => $admin->admin_id,
+            'userable_type' => Admin::class,
+        ]);
+
+        return redirect()->back()->with('success', 'Coordinator added successfully!');
+    }
+
+    public function showProfile()
+    {
+        return view('admin.ui.profile');
+    }
+
+    public function showStudentProfile($student_id)
+    {
+        $student = Student::findOrFail($student_id);
+        return view('admin.ui.student-profile', compact('student'));
+    }
+
+    // public function show($id)
     // {
-    //     $validated = $request->validate([
-    //         'question_type_id' => 'required|exists:question_types,question_type_id',
-    //         'question_category_id' => 'required|exists:question_categories,question_category_id',
-    //         'difficulty_level' => 'required|integer',
-    //         'content' => 'required|string',
-    //         'discrimination_index' => 'required|numeric',
-    //         'guess_factor' => 'required|numeric',
-    //     ]);
-
-    //     Question::create($validated);
-
-    //     return redirect()->route('admin-question-bank')->with('success', 'Question added successfully.');
+    //     $user = User::findOrFail($id);
+    //     return view('admin.shared.admin-sidebar', compact('user'));
     // }
-
-    // public function updateQuestion(Request $request, $id)
-    // {
-    //     $question = Question::findOrFail($id);
-
-    //     $validated = $request->validate([
-    //         'question_type_id' => 'required|exists:question_types,question_type_id',
-    //         'question_category_id' => 'required|exists:question_categories,question_category_id',
-    //         'difficulty_level' => 'required|integer',
-    //         'content' => 'required|string',
-    //         'discrimination_index' => 'required|numeric',
-    //         'guess_factor' => 'required|numeric',
-    //     ]);
-
-    //     $question->update($validated);
-
-    //     return redirect()->route('admin-question-bank')->with('success', 'Question updated successfully.');
-    // }
-
-    // public function deleteQuestion($id)
-    // {
-    //     $question = Question::findOrFail($id);
-    //     $question->delete();
-
-    //     return redirect()->route('admin-question-bank')->with('success', 'Question deleted successfully.');
-    // }
-
-
-
-
 }
+

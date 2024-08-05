@@ -52,8 +52,8 @@ class User extends Authenticatable
     public function userable()
     {
         return $this->morphTo();
-    } 
-      
+    }
+
     public function isAdmin()
     {
         return $this->userable instanceof Admin;
@@ -62,5 +62,17 @@ class User extends Authenticatable
     public function isStudent()
     {
         return $this->userable instanceof Student;
+    }
+
+    protected static function booted()
+    {
+        static::deleting(function ($user) {
+            // delete related model based on userable type
+            if ($user->isAdmin()) {
+                $user->userable()->delete();
+            } elseif ($user->isStudent()) {
+                $user->userable()->delete();
+            }
+        });
     }
 }

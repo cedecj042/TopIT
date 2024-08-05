@@ -19,22 +19,36 @@
                 </a>
             </li>
             <li class="nav-item w-100">
-                <a href="{{ route('admin-question-bank') }}" class="nav-link text-white py-3 ps-4 d-flex align-items-center gap-1" id="test-link"
-                    data-page="test">
+                <a href="{{ route('admin-question-bank') }}" class="nav-link text-white py-3 ps-4 d-flex align-items-center gap-1" id="question-link"
+                    data-page="question">
                     <span class="material-symbols-outlined">quiz</span> <span
                         class="ms-1 d-none d-sm-inline fs-6">Question Bank</span>
+                </a>
+            </li>
+            <li class="nav-item w-100">
+                <a href="{{ route('admin-users') }}" class="nav-link text-white py-3 ps-4 d-flex align-items-center gap-1" id="users-link"
+                    data-page="users">
+                    <span class="material-symbols-outlined">person</span> <span
+                        class="ms-1 d-none d-sm-inline fs-6">Manage Users</span>
                 </a>
             </li>
         </ul>
     </div>
     <div class="dropdown pb-4 px-4">
-        <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
-            id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
-            <img src="{{ asset('assets/logo.svg') }}" alt="User" width="30" height="30" class="rounded-circle">
-            <span class="d-none d-sm-inline mx-1 fs-6">User</span>
-        </a>
+            <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle"
+                id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                @php
+                    if (Auth::user()->userable->profile_image == null) {
+                        $profileImageUrl = asset('assets/profile-circle.png');
+                    } else {
+                        $profileImageUrl = Storage::disk('profile_images')->url(Auth::user()->userable->profile_image);
+                    }
+                @endphp
+                <img src="{{ asset('assets/profile-circle.png') }}" alt="Profile Image" class="rounded-circle" width="30" height="30">
+                <span class="d-none d-sm-inline mx-1 fs-6">{{ Auth::user()->username }}</span>
+            </a>
         <ul class="dropdown-menu dropdown-menu text-small shadow">
-            <li><a class="dropdown-item fs-6" href="#">Profile</a></li>
+            <li><a class="dropdown-item fs-6" href="{{ route('admin-profile') }}">Profile</a></li>
             <li><a class="dropdown-item fs-6" href="{{ route('logout') }}">Sign out</a></li>
         </ul>
     </div>

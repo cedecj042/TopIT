@@ -45,8 +45,8 @@ class StudentsTable extends DataTableComponent
                 ->sortable(),
             Column::make('Details')
                 ->label(
-                    fn($row) => '<a href="#" class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#profileModal-' . $row->student_id . '">View Profile</a>'
-                )
+                    fn($row) => '<a href="' . route('admin-studentprofile', $row->student_id) . '" class="btn btn-primary btn-sm">View Profile</a>'
+                    )
                 ->html(),
         ];
     }

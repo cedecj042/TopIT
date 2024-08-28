@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\Admin\ProcessedPdfController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CourseController;
@@ -9,11 +10,11 @@ use Illuminate\Support\Facades\Route;
 
 
 Route::middleware('guest')->group(function () {
-    Route::get('/register', [StudentController::class, 'showRegistration'])->name('register');
-    Route::post('/register', [StudentController::class, 'register']);
+    Route::get('/register', [StudentController::class, 'showStudentRegistration'])->name('register');
+    Route::post('/register', [StudentController::class, 'registerStudent']);
 
-    Route::get('/login', [StudentController::class, 'showLogin'])->name('login');
-    Route::post('/login', [StudentController::class, 'login']);
+    Route::get('/login', [StudentController::class, 'showLoginStudent'])->name('login');
+    Route::post('/login', [StudentController::class, 'loginStudent']);
 });
 
 Route::middleware('auth')->group(function () {
@@ -31,6 +32,7 @@ Route::middleware('student')->group(function () {
 // Admin
 Route::get('/admin-login', [AdminController::class, 'showLogin'])->name('admin-login');
 Route::post('/admin-login', [AdminController::class, 'login']);
+Route::post('/admin/store-processed-pdf/',[ProcessedPdfController::class,'store'])->name('store-pdf');
 
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin-dashboard', [AdminController::class, 'showDashboard'])->name('admin-dashboard');
@@ -45,6 +47,4 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::post('/admin/add-coordinator', [AdminController::class, 'addCoordinator'])->name('admin.add-coordinator');
     Route::get('/admin-profile', [AdminController::class, 'showProfile'])->name('admin-profile');
     Route::get('/admin-studentprofile/{student_id}', [AdminController::class, 'showStudentProfile'])->name('admin-studentprofile');
-
-
 });

@@ -14,6 +14,12 @@ class Subsection extends Model
 {
     use HasFactory;
     protected $primaryKey = 'subsection_id';
+    protected $fillable = [
+        'section_id',
+        'title',
+        'content',
+        'order'
+    ];
 
     public function sections(){
         return $this->belongsTo(Section::class,'section_id','section_id');

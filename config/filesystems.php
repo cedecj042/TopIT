@@ -67,6 +67,12 @@ return [
             'url' => env('APP_URL') . '/pdfs',
             'visibility' => 'public',
         ],
+        'images' => [
+            'driver' => 'local',
+            'root' => public_path('images'),
+            'url' => env('APP_URL') . '/images',
+            'visibility' => 'public',
+        ],
 
     ],
 

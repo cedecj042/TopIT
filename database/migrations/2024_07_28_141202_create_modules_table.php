@@ -31,6 +31,7 @@ return new class extends Migration
             $table->foreignId('course_id')->references('course_id')->on('courses')->cascadeOnDelete();
             $table->string('title');
             $table->json('content');
+            $table->integer('order');
             $table->timestamps();
         });
 

@@ -10,6 +10,14 @@ class Module extends Model
 {
     use HasFactory;
     protected $primaryKey='module_id';
+    protected $fillable = [
+        'course_id',
+        'title',
+        'content',
+        'order'
+    ];
+
+    
     public function lessons(){
         return $this->hasMany(Lesson::class,'module_id');
     }

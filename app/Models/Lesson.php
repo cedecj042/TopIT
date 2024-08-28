@@ -11,6 +11,14 @@ class Lesson extends Model
 {
     use HasFactory;
     protected $primaryKey='lesson_id';
+
+    protected $fillable = [
+        'module_id',
+        'title',
+        'content',
+        'order'
+    ];
+    
     public function modules(){
         return $this->belongsTo(Module::class,'module_id','module_id');
     }

@@ -11,7 +11,18 @@ class Figure extends Model
 {
     use HasFactory;
     protected $primaryKey='figure_id';
+    protected $fillable = [
+        'figureable_id', 
+        'figureable_type', 
+        'description',
+        'metadata',
+        'caption'
+    ];
     public function figureable(){
         return $this->morphTo();
+    }
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
     }
 }

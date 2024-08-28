@@ -4,10 +4,13 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Models\Pdf;
+use App\Models\Course;
+use App\Jobs\ProcessPdfJob;
 use App\Services\FastAPIService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
+
 
 class PdfController extends Controller
 {
@@ -29,7 +32,7 @@ class PdfController extends Controller
             'course_id' => 'required'
         ]);
 
-        Log::info('Uploaded file details: ', [$request->file('pdf_file')]);
+        $course = Course::findOrFail($request['course_id']);
 
         if ($request->hasFile('pdf_file')) {
             $file = $request->file('pdf_file');
@@ -47,18 +50,12 @@ class PdfController extends Controller
             }
 
             try {
-                $pdfContent = file_get_contents($fullPath);
-                $response = $this->fastAPIService->uploadPdf($pdfContent, $fileName);
-
-                if ($response->successful()) {
-                    Log::info('FastAPI response: ', $response->json());
-                    return redirect()->back()->with('success', 'PDF uploaded, processed, and sent to FastAPI successfully!');
-                } else {
-                    Log::error('FastAPI request failed: ' . $response->body());
-                    return redirect()->back()->withErrors(['error' => 'Failed to process PDF with FastAPI.']);
-                }
+                $pdfFilePath = $fullPath;
+                ProcessPdfJob::dispatch($pdfFilePath, $fileName, $course->title, $course->course_id);
+            
+                return redirect()->back()->with('success', 'PDF uploaded successfully! Processing will continue in the background.');
             } catch (\Exception $e) {
-                Log::error('Error sending PDF to FastAPI: ' . $e->getMessage());
+                Log::error('Error dispatching PDF processing job: ' . $e->getMessage());
                 return redirect()->back()->withErrors(['error' => 'An error occurred while processing the PDF.']);
             }
         } else {
@@ -70,7 +67,7 @@ class PdfController extends Controller
     public function deletePdf($id)
     {
         $pdf = Pdf::findOrFail($id);
-        
+
         $this->deletePdfFile($pdf);
         $this->deleteImagesViaFastAPI($pdf);
 
@@ -106,7 +103,7 @@ class PdfController extends Controller
         $pdfName = pathinfo($pdf->file_name, PATHINFO_FILENAME);
         try {
             $response = $this->fastAPIService->deleteImages($pdfName);
-            
+
             if ($response->successful()) {
                 Log::info('FastAPI delete response: ' . $response->body());
             } else {
@@ -115,5 +112,10 @@ class PdfController extends Controller
         } catch (\Exception $e) {
             Log::error('Error deleting images via FastAPI: ' . $e->getMessage());
         }
+    }
+
+    public function storeProcessedPdf()
+    {
+
     }
 }

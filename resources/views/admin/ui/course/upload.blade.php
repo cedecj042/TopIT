@@ -38,9 +38,8 @@
                         {{ session('error') }}
                     </div>
                 @endif
-
-                <!-- Render the Livewire component -->
-                <livewire:pdf-table theme="bootstrap-5" />
+                <h4 class="fw-bold">List of PDF</h4>
+                <livewire:pdf-table theme="bootstrap-5" :courseId="$course->course_id" />
             </div>
             <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel"
                 aria-hidden="true">
@@ -74,24 +73,6 @@
                 </div>
             </div>
 
-            <!-- <div class="row">
-                @foreach($course->pdfs as $pdf)
-                    <div class="col-12 mb-3">
-                        <div class="card bg-light border-1 rounded-4 my-1 px-2 py-2">
-                            <div class="card-body py-2 fs-6">
-                                <p class="card-text mb-2">
-                                    <small class="text-muted" style="font-size: 0.8rem;">{{ $pdf->created_at }}</small>
-                                    <small class="text-muted" style="font-size: 0.8rem;"> | Uploaded by:
-                                        {{ $pdf->uploaded_by }}</small>
-                                </p>
-                                <h6 class="card-title mb-2" style="font-size: 1.3rem;">{{ $pdf->file_name }}</h6>
-                                <span class="badge bg-success"
-                                    style="font-size: 0.8rem;font-weight: normal; padding: 0.6em 1em;">Success</span>
-                            </div>
-                        </div>
-                    </div>
-                @endforeach
-            </div> -->
         </main>
     </div>
 </div>

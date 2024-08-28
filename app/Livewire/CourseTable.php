@@ -23,16 +23,26 @@ class CourseTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make('Course ID', 'course_id')->sortable(),
+            Column::make('ID', 'course_id')
+                ->sortable()
+                ->view('admin.ui.course.actions.course-id-link'),
             Column::make('Title', 'title')->searchable(),
             Column::make('Description', 'description'),
             Column::make('Created At', 'created_at')->sortable(),
-            Column::make('View PDFs')
+            Column::make('Actions')
                 ->label(function ($row) {
-                    return '<a href="' . route('admin-course-detail', ['course_id' => $row->course_id]). '" class="btn btn-primary">View Pdfs</a>';
+                    return '<button wire:click="deleteCourse(' . $row->course_id . ')" class="btn btn-danger">Delete</button>';
                 })
-                ->html(), // Ensure HTML is rendered
+                ->html(),
         ];
+    }
+    public function deleteCourse($course_id)
+    {
+        $course = Course::findOrFail($course_id);
+    
+        $course->delete();
+    
+        $this->js = '<script>alert("Course deleted successfully.");</script>';
     }
 }
 

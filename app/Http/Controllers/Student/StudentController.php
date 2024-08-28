@@ -15,12 +15,12 @@ class StudentController extends Controller
 {
     //
 
-    public function showRegistration()
+    public function showStudentRegistration()
     {
         return view('student.auth.register');
     }
 
-    public function register(Request $request)
+    public function registerStudent(Request $request)
     {
         \Log::info('Registration attempt:', $request->all());
         try {
@@ -91,12 +91,12 @@ class StudentController extends Controller
         }
     }
 
-    public function showLogin()
+    public function showLoginStudent()
     {
         return view('student.auth.login');
     }
 
-    public function login(Request $request){
+    public function loginStudent(Request $request){
         \Log::info('Login attempt started.');
 
         $validated = $request->validate([

@@ -79,7 +79,7 @@ class CourseController extends Controller
             ]);
 
             $pdf->save();
-            
+
             // Ensure the file is saved and exists
             $fullPath = storage_path('app/pdfs/' . $fileName);
             if (!file_exists($fullPath)) {
@@ -93,7 +93,9 @@ class CourseController extends Controller
             try {
                 $pdfContent = file_get_contents($fullPath);
                 $response = Http::attach(
-                    'file', $pdfContent, $fileName
+                    'file',
+                    $pdfContent,
+                    $fileName
                 )->post('http://127.0.0.1:8001/upload');
 
                 if ($response->successful()) {
@@ -116,32 +118,32 @@ class CourseController extends Controller
     }
 
     public function deletePdf($id)
-{
-    $pdf = Pdf::findOrFail($id);
-    
-    // Delete the PDF file
-    $pdfPath = storage_path('app/' . $pdf->file_path);
-    if (file_exists($pdfPath)) {
-        unlink($pdfPath);
-    }
+    {
+        $pdf = Pdf::findOrFail($id);
 
-    // Delete the images via FastAPI
-    $pdfName = pathinfo($pdf->file_name, PATHINFO_FILENAME);
-    try {
-        $response = Http::delete("http://127.0.0.1:800/delete/{$pdfName}");
-        
-        if ($response->successful()) {
-            \Log::info('FastAPI delete response: ' . $response->body());
-        } else {
-            \Log::error('FastAPI delete request failed: ' . $response->body());
+        // Delete the PDF file
+        $pdfPath = storage_path('app/' . $pdf->file_path);
+        if (file_exists($pdfPath)) {
+            unlink($pdfPath);
         }
-    } catch (\Exception $e) {
-        \Log::error('Error deleting images via FastAPI: ' . $e->getMessage());
+
+        // Delete the images via FastAPI
+        $pdfName = pathinfo($pdf->file_name, PATHINFO_FILENAME);
+        try {
+            $response = Http::delete("http://127.0.0.1:800/delete/{$pdfName}");
+
+            if ($response->successful()) {
+                \Log::info('FastAPI delete response: ' . $response->body());
+            } else {
+                \Log::error('FastAPI delete request failed: ' . $response->body());
+            }
+        } catch (\Exception $e) {
+            \Log::error('Error deleting images via FastAPI: ' . $e->getMessage());
+        }
+
+        // Delete the database record
+        $pdf->delete();
+
+        return redirect()->back()->with('success', 'PDF and associated images deleted successfully');
     }
-
-    // Delete the database record
-    $pdf->delete();
-
-    return redirect()->back()->with('success', 'PDF and associated images deleted successfully');
-}
 }

@@ -11,7 +11,17 @@ class Table extends Model
 {
     use HasFactory;
     protected $primaryKey = 'table_id';
+    protected $fillable = [
+        'tableable_id', 
+        'tableable_type', 
+        'content',
+        'caption'
+    ];
     public function tableable(){
         return $this->morphTo();
+    }
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
     }
 }

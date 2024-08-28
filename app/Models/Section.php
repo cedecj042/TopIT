@@ -16,6 +16,12 @@ class Section extends Model
 {
     use HasFactory;
     protected $primaryKey = 'section_id';
+    protected $fillable = [
+        'lesson_id',
+        'title',
+        'content',
+        'order'
+    ];
     public function lessons(){
         return $this->belongsTo(Lesson::class,'lesson_id','lesson_id');
     }

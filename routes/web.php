@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\AdminController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\PdfController;
+use App\Http\Controllers\Admin\QuestionsController;
 use App\Http\Controllers\Student\StudentController;
 use Illuminate\Support\Facades\Route;
 
@@ -41,10 +42,15 @@ Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin-course/{course_id}', [CourseController::class, 'showCourseDetail'])->name('admin-course-detail');
     Route::post('/admin-course/pdf/upload', [PdfController::class, 'uploadPdf'])->name('upload-pdf');
     Route::delete('/admin-course/pdf/delete/{id}', [PdfController::class, 'deletePdf'])->name('delete-pdf');
-    Route::get('/admin-question-bank', [AdminController::class, 'showQuestionBank'])->name('admin-question-bank');
+    // Route::get('/admin-question-bank', [AdminController::class, 'showQuestionBank'])->name('admin-question-bank');
+    Route::get('/admin-question-bank-list', [QuestionsController::class, 'showQuestionBank'])->name('admin-question-bank-list');
+    Route::get('/admin-question-bank-manage', [QuestionsController::class, 'showQuestionBankManage'])->name('admin-question-bank-manage');
+
     Route::get('/admin-users', [AdminController::class, 'showUsers'])->name('admin-users');
     Route::delete('/admin-users/{user}', [AdminController::class, 'destroy'])->name('admin-users.destroy');
     Route::post('/admin/add-coordinator', [AdminController::class, 'addCoordinator'])->name('admin.add-coordinator');
     Route::get('/admin-profile', [AdminController::class, 'showProfile'])->name('admin-profile');
     Route::get('/admin-studentprofile/{student_id}', [AdminController::class, 'showStudentProfile'])->name('admin-studentprofile');
+    Route::get('/admin-reports', [AdminController::class, 'showReports'])->name('admin-reports');
+
 });

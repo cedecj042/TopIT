@@ -70,13 +70,7 @@ class AdminController extends Controller
         return view('admin.ui.dashboard', compact('students', 'school_years'));
     }
 
-    # Question Bank
-
-    public function showQuestionBank()
-    {
-        $questions = Question::with('questionType', 'questionCategory')->get();
-        return view('admin.ui.question-bank', compact('questions'));
-    }
+    
 
     public function showUsers()
     {
@@ -130,6 +124,10 @@ class AdminController extends Controller
     {
         $student = Student::findOrFail($student_id);
         return view('admin.ui.student-profile', compact('student'));
+    }
+    public function showReports()
+    {
+        return view('admin.ui.reports');
     }
 
     // public function show($id)

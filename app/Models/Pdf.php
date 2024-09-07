@@ -14,6 +14,7 @@ class Pdf extends Model
         'course_id',
         'file_name',
         'file_path',
+        'status',
         'uploaded_by',
     ];
 

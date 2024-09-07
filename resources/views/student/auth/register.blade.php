@@ -53,6 +53,11 @@
                     <input type="text" class="form-control auth-textbox" id="inputAddress" name="address"
                         placeholder="1234 Main St">
                 </div>
+                <div class="col-12">
+                    <label for="inputCourse" class="form-label">Course</label>
+                    <input type="text" class="form-control auth-textbox" id="inputCourse" name="course"
+                        placeholder="Bachelor of Science Major in Computer Science">
+                </div>
                 <div class="col-8">
                     <label for="school" class="form-label">School</label>
                     <input type="text" class="form-control auth-textbox" id="school" name="school"

@@ -19,6 +19,7 @@ class Student extends Model
         'gender',
         'age',
         'address',
+        'course',
         'school',
         'school_year'
     ];

@@ -14,7 +14,7 @@ class Image extends Model
         'imageable_id',
         'imageable_type',
         'file_name',
-        'file_path'
+        'file_path',
     ];
 
     public function imageable(){

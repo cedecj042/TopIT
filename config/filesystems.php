@@ -67,10 +67,24 @@ return [
             'url' => env('APP_URL') . '/pdfs',
             'visibility' => 'public',
         ],
-        'images' => [
+        'figures' => [
             'driver' => 'local',
-            'root' => public_path('images'),
-            'url' => env('APP_URL') . '/images',
+            'root' => storage_path('app/public/figures'),
+            'url' => env('APP_URL') . '/storage/figures',
+            'visibility' => 'public',
+        ],
+
+        'tables' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/tables'),
+            'url' => env('APP_URL') . '/storage/tables',
+            'visibility' => 'public',
+        ],
+
+        'code' => [
+            'driver' => 'local',
+            'root' => storage_path('app/public/code'),
+            'url' => env('APP_URL') . '/storage/code',
             'visibility' => 'public',
         ],
 

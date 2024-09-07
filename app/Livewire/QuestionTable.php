@@ -3,8 +3,6 @@
 namespace App\Livewire;
 
 use App\Models\Question;
-use App\Models\QuestionType;
-use App\Models\QuestionCategory;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
@@ -25,16 +23,14 @@ class QuestionTable extends DataTableComponent
     {
         return [
             Column::make('Question ID', 'question_id')->sortable(),
-            Column::make('Question Type', 'question_type_id')
-                ->format(fn($value, $row, Column $column) => $row->questionType->name)
-                ->searchable(),
-            Column::make('Question Category', 'question_category_id')
-                ->format(fn($value, $row, Column $column) => $row->questionCategory->name)
+            Column::make('Question Type')
+                ->format(fn($value, $row, Column $column) => class_basename($row->questionable_type)) // Display polymorphic type
                 ->searchable(),
             Column::make('Difficulty Level', 'difficulty_level')->sortable(),
-            Column::make('Content', 'content')->searchable(),
+            Column::make('Question Content', 'question')
+                ->format(fn($value, $row, Column $column) => $row->question) // Display question content
+                ->searchable(),
             Column::make('Discrimination Index', 'discrimination_index')->sortable(),
-            Column::make('Guess Factor', 'guess_factor')->sortable(),
             Column::make('Actions')
                 ->label(fn($row) => '<a href="#" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#editModal-' . $row->question_id . '">Edit</a> <a href="#" class="btn btn-danger btn-sm" wire:click="delete(' . $row->question_id . ')">Delete</a>')
                 ->html(),
@@ -45,11 +41,17 @@ class QuestionTable extends DataTableComponent
     {
         return [
             SelectFilter::make('Question Type')
-                ->options(QuestionType::pluck('name', 'question_type_id')->toArray())
-                ->filter(fn(Builder $builder, string $value) => $builder->where('question_type_id', $value)),
-            SelectFilter::make('Question Category')
-                ->options(QuestionCategory::pluck('name', 'question_category_id')->toArray())
-                ->filter(fn(Builder $builder, string $value) => $builder->where('question_category_id', $value)),
+                ->options([
+                    '' => 'All',
+                    'Identification' => 'Identification',
+                    'MultiChoiceSingle' => 'Multiple Choice Single',
+                    'MultiChoiceMany' => 'Multiple Choice Many',
+                ])
+                ->filter(function (Builder $builder, string $value) {
+                    if ($value) {
+                        $builder->where('questionable_type', "App\\Models\\$value");
+                    }
+                }),
         ];
     }
 

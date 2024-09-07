@@ -1,8 +1,8 @@
 <?php
-
 namespace App\Livewire;
 
 use App\Models\Pdf;
+use Illuminate\Database\Eloquent\Builder;
 use Livewire\Component;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
 use Rappasoft\LaravelLivewireTables\Views\Column;
@@ -14,10 +14,9 @@ class PdfTable extends DataTableComponent
 
     protected $model = Pdf::class;
 
-    public function mount($courseId)
+    public function mount($course_id)
     {
-        $this->courseId = $courseId;
-        logger()->info("Course ID set in PdfTable: " . $this->courseId);
+        $this->courseId = $course_id;
     }
 
     public function configure(): void
@@ -25,9 +24,10 @@ class PdfTable extends DataTableComponent
         $this->setPrimaryKey('pdf_id');
         $this->setDefaultSort('pdf_id', 'asc');
         $this->setPerPageAccepted([6, 12]);
+        $this->setEmptyMessage('No PDFs found for this course.');
     }
 
-    public function query()
+    public function builder(): Builder
     {
         return Pdf::query()->where('course_id', $this->courseId);
     }
@@ -35,14 +35,13 @@ class PdfTable extends DataTableComponent
     public function columns(): array
     {
         return [
-            Column::make('Pdf ID', 'pdf_id')->sortable(),
-            Column::make('Course Id', 'course_id'),
+            Column::make('Pdf Id', 'pdf_id')->sortable()->hideIf(true),
+            Column::make('Course Id','course_id')->hideIf(true),
             Column::make('File Name', 'file_name')->searchable(),
-            Column::make('File Path', 'file_path'),
+            Column::make('Status', 'status'),
             Column::make('Created At', 'created_at')->sortable(),
-            Column::make('Updated At', 'updated_at')->sortable(),
             Column::make('Actions')
-                ->label(fn($row) => view('admin.ui.course.actions', ['row' => $row])), // Using a Blade partial for action
+                ->label(fn($row) => view('admin.ui.course.actions.actions', ['row' => $row])), // Using a Blade partial for action
         ];
     }
 
@@ -62,4 +61,5 @@ class PdfTable extends DataTableComponent
             session()->flash('error', 'PDF not found.');
         }
     }
+
 }

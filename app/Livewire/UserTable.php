@@ -55,7 +55,7 @@ class UserTable extends DataTableComponent
             Column::make('Action')
                 ->label(
                     fn($row) => '
-                    <form action="' . route('admin-users.destroy', $row->user_id) . '" method="POST" style="display:inline;">
+                    <form action="' . route('admin.users.destroy', $row->user_id) . '" method="POST" style="display:inline;">
                         ' . csrf_field() . '
                         ' . method_field('DELETE') . '
                         <button type="submit" style="border: none; background: none; padding: 0;">

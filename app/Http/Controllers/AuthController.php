@@ -16,7 +16,7 @@ class AuthController extends Controller
         $user = Auth::user();
 
         if ($user && $user->userable_type === 'App\Models\Admin') {
-            $redirectRoute = 'admin-login';
+            $redirectRoute = 'admin.login';
         } else {
             $redirectRoute = 'login';
         }

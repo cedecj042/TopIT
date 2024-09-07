@@ -13,29 +13,20 @@
                 </div>
 
                 <div class="course-list mx-auto" style="width: 100%">
-                    @php
-                        $courses = [
-                            ['name' => 'Software Development', 'color' => 'primary'],
-                            ['name' => 'Understanding and Using Data', 'color' => 'danger'],
-                            ['name' => 'System Architecture', 'color' => 'success'],
-                            ['name' => 'Information Security', 'color' => 'info'],
-                            ['name' => 'IT Business and Ethics', 'color' => 'warning'],
-                            ['name' => 'Project Management and Technical Communication', 'color' => 'secondary'],
-                        ];
-                    @endphp
 
                     @foreach ($courses as $course)
                         <div class="card mb-3 border-0 shadow-sm rounded-4 overflow-hidden">
                             <div class="card-body p-0">
                                 <div class="d-flex align-items-center">
-                                    <div class="bg-{{ $course['color'] }}" style="width: 20px; height: 90px;"></div>
+                                    <div class="bg-grey" style="width: 20px; height: 90px;"></div>
                                     <div class="flex-grow-1 px-3 py-2">
-                                        <h5 class="mb-0 fw-semibold">{{ $course['name'] }}</h5>
+                                        <h5 class="mb-0 fw-semibold">{{ $course->title }}</h5>
+                                        <p>{{$course->description}}</p>
                                     </div>
                                     <div class="px-3 d-flex align-items-center">
-                                        <button class="btn btn-link p-3">
+                                        <a class="btn btn-link p-3" href="{{route('student-course-detail',$course->course_id)}}">
                                             <i class="h3 bi bi-play-circle-fill"></i>
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                                 

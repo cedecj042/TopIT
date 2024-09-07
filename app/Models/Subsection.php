@@ -18,7 +18,6 @@ class Subsection extends Model
         'section_id',
         'title',
         'content',
-        'order'
     ];
 
     public function sections(){
@@ -35,5 +34,9 @@ class Subsection extends Model
     }
     public function questions(){
         return $this->hasMany(Question::class,'section_id');
+    }
+    public function images()
+    {
+        return $this->morphMany(Image::class, 'imageable');
     }
 }

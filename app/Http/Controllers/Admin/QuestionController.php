@@ -129,5 +129,8 @@ class QuestionController extends Controller
         // For debugging purposes, return the JSON output
         return response()->json($output);
     }
-
+    public function showQuestionBankManage($courseId){
+        $courses = Course::with('pdfs')->findOrFail($courseId);
+        return view('admin.ui.question-bank.admin-question-bank-manage', compact('course'));
+    }
 }

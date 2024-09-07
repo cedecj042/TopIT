@@ -10,6 +10,7 @@ use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Student\StudentCourseController;
 use App\Http\Controllers\Admin\PdfController;
+use App\Http\Controllers\Admin\QuestionsController;
 use App\Http\Controllers\Student\StudentController;
 use Illuminate\Support\Facades\Route;
 
@@ -57,6 +58,9 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::post('/pdf/upload', [PdfController::class, 'uploadPdf'])->name('pdf.upload');
         Route::delete('/pdf/delete/{id}', [PdfController::class, 'deletePdf'])->name('pdf.delete');
     });
+    // Route::get('/admin-question-bank', [AdminController::class, 'showQuestionBank'])->name('admin-question-bank');
+    Route::get('/admin-question-bank-list', [QuestionsController::class, 'showQuestionBank'])->name('admin-question-bank-list');
+    Route::get('/admin-question-bank-manage', [QuestionsController::class, 'showQuestionBankManage'])->name('admin-question-bank-manage');
     
     // Modules
     Route::prefix('modules')->name('modules.')->group(function () {
@@ -88,6 +92,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/generate', [QuestionController::class, 'viewGenerate'])->name('generate');
         Route::post('/send', [QuestionController::class, 'generateQuestions'])->name('send');
     });
+    
 
     // Users
     Route::prefix('users')->name('users.')->group(function () {
@@ -99,5 +104,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Profiles
     Route::get('/profile', [AdminController::class, 'showProfile'])->name('profile');
     Route::get('/studentprofile/{student_id}', [AdminController::class, 'showStudentProfile'])->name('studentprofile');
+    Route::get('/admin-reports', [AdminController::class, 'showReports'])->name('admin-reports');
 
 });

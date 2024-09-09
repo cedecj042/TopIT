@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\CourseController;
 use App\Http\Controllers\Admin\PdfController;
 use App\Http\Controllers\Admin\QuestionsController;
 use App\Http\Controllers\Student\StudentController;
+use App\Http\Controllers\Student\PretestController;
 use Illuminate\Support\Facades\Route;
 
 
@@ -24,10 +25,16 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('student')->group(function () {
+    Route::view('/welcomepage', 'student.ui.welcomepage')->name('welcomepage');
+    Route::view('/postpretest', 'student.ui.postpretest')->name('postpretest');
+
     Route::view('/dashboard', 'student.ui.dashboard')->name('dashboard');
     Route::view('/course', 'student.ui.course')->name('course');
     Route::view('/test', 'student.ui.test')->name('test');
     Route::view('/profile', 'student.ui.profile')->name('profile');
+
+    Route::get('/pretest/{number}', [PretestController::class, 'showQuestion'])->name('pretest.question');
+
 });
 
 // Admin

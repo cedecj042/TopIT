@@ -73,10 +73,13 @@ class StudentController extends Controller
                 ]);
 
                 $user->save();
+                Auth::login($user);
                 
             });
 
-            return redirect()->route('login')->with('success', 'Registration successful. Please log in.');
+            return redirect()->route('welcomepage');
+
+            // return redirect()->route('login')->with('success', 'Registration successful. Please log in.');
         } catch (\Illuminate\Validation\ValidationException $e) {
             \Log::error('Validation failed: ' . $e->getMessage());
             return redirect()->back()->withErrors($e->errors())->withInput();

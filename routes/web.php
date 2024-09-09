@@ -1,9 +1,14 @@
 <?php
 
 use App\Http\Controllers\Admin\ProcessedPdfController;
+use App\Http\Controllers\Admin\QuestionController;
+use App\Http\Controllers\Admin\SectionController;
+use App\Http\Controllers\Admin\VectorController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\Admin\AdminController;
+use App\Http\Controllers\Admin\ModuleController;
 use App\Http\Controllers\Admin\CourseController;
+use App\Http\Controllers\Student\StudentCourseController;
 use App\Http\Controllers\Admin\PdfController;
 use App\Http\Controllers\Admin\QuestionsController;
 use App\Http\Controllers\Student\StudentController;
@@ -29,7 +34,9 @@ Route::middleware('student')->group(function () {
     Route::view('/postpretest', 'student.ui.postpretest')->name('postpretest');
 
     Route::view('/dashboard', 'student.ui.dashboard')->name('dashboard');
-    Route::view('/course', 'student.ui.course')->name('course');
+    Route::get('/course', [StudentCourseController::class, 'showStudentCourse'])->name('student-course');
+    Route::get('/course/{id}/', [StudentCourseController::class, 'showStudentCourseDetail'])->name('student-course-detail');
+    Route::get('/course/module/{id}', [StudentCourseController::class, 'showModuleDetail'])->name('student-module-detail');
     Route::view('/test', 'student.ui.test')->name('test');
     Route::view('/profile', 'student.ui.profile')->name('profile');
 
@@ -37,27 +44,73 @@ Route::middleware('student')->group(function () {
 
 });
 
-// Admin
-Route::get('/admin-login', [AdminController::class, 'showLogin'])->name('admin-login');
-Route::post('/admin-login', [AdminController::class, 'login']);
-Route::post('/admin/store-processed-pdf/',[ProcessedPdfController::class,'store'])->name('store-pdf');
 
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin-dashboard', [AdminController::class, 'showDashboard'])->name('admin-dashboard');
-    Route::get('/admin-course', [CourseController::class, 'showCourse'])->name('admin-course');
-    Route::post('/admin-course/add', [CourseController::class, 'addCourse'])->name('add-course');
-    Route::get('/admin-course/{course_id}', [CourseController::class, 'showCourseDetail'])->name('admin-course-detail');
-    Route::post('/admin-course/pdf/upload', [PdfController::class, 'uploadPdf'])->name('upload-pdf');
-    Route::delete('/admin-course/pdf/delete/{id}', [PdfController::class, 'deletePdf'])->name('delete-pdf');
+// Admin
+Route::prefix('admin')->name('admin.')->group(function () {
+    Route::get('/login', [AdminController::class, 'showLogin'])->name('login');
+    Route::post('/login', [AdminController::class, 'login']);
+    Route::post('/store-processed-pdf', [ProcessedPdfController::class, 'store'])->name('store-pdf');
+});
+
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+
+    // Dashboard
+    Route::get('/dashboard', [AdminController::class, 'showDashboard'])->name('dashboard');
+
+    // Courses
+    Route::prefix('course')->name('course.')->group(function () {
+        Route::get('/', [CourseController::class, 'showCourse'])->name('index');
+        Route::post('/add', [CourseController::class, 'addCourse'])->name('add');
+        Route::get('/{course_id}', [CourseController::class, 'showCourseDetail'])->name('detail');
+        Route::post('/pdf/upload', [PdfController::class, 'uploadPdf'])->name('pdf.upload');
+        Route::delete('/pdf/delete/{id}', [PdfController::class, 'deletePdf'])->name('pdf.delete');
+    });
     // Route::get('/admin-question-bank', [AdminController::class, 'showQuestionBank'])->name('admin-question-bank');
     Route::get('/admin-question-bank-list', [QuestionsController::class, 'showQuestionBank'])->name('admin-question-bank-list');
     Route::get('/admin-question-bank-manage', [QuestionsController::class, 'showQuestionBankManage'])->name('admin-question-bank-manage');
+    
+    // Modules
+    Route::prefix('modules')->name('modules.')->group(function () {
+        // Route::view('/store','admin.ui.course.module.vectorize');
+        Route::get('/vector',[ModuleController::class,'vectorShow'])->name('vector.show');
+        Route::post('/vector/upload',[ModuleController::class,'vectorStore'])->name('vector.upload');
+        Route::get('/', [ModuleController::class, 'showModules'])->name('index');
+        Route::post('/update', [ModuleController::class, 'updateModule'])->name('update');
+        Route::get('/{id}', [ModuleController::class, 'editModule'])->name('edit');
+        
+    });
 
-    Route::get('/admin-users', [AdminController::class, 'showUsers'])->name('admin-users');
-    Route::delete('/admin-users/{user}', [AdminController::class, 'destroy'])->name('admin-users.destroy');
-    Route::post('/admin/add-coordinator', [AdminController::class, 'addCoordinator'])->name('admin.add-coordinator');
-    Route::get('/admin-profile', [AdminController::class, 'showProfile'])->name('admin-profile');
-    Route::get('/admin-studentprofile/{student_id}', [AdminController::class, 'showStudentProfile'])->name('admin-studentprofile');
+    // Lessons
+    Route::prefix('lessons')->name('lessons.')->group(function () {
+        Route::view('/', 'admin.ui.course.')->name('index');
+    });
+
+    // Sections
+    Route::prefix('sections')->name('sections.')->group(function () {
+        Route::view('/', 'admin.ui.course.sections.index')->name('index');
+        Route::get('/{id}', [SectionController::class, 'editSection'])->name('edit');
+        Route::post('/update', [ModuleController::class, 'updateSection'])->name('update');
+
+    });
+    // Question Bank
+    Route::prefix('questions')->name('questions.')->group(function (){
+        Route::get('/', [QuestionController::class, 'showQuestions'])->name('index');
+        Route::get('/edit/{id}', [QuestionController::class, 'editQuestions'])->name('edit');
+        Route::get('/generate', [QuestionController::class, 'viewGenerate'])->name('generate');
+        Route::post('/send', [QuestionController::class, 'generateQuestions'])->name('send');
+    });
+    
+
+    // Users
+    Route::prefix('users')->name('users.')->group(function () {
+        Route::get('/', [AdminController::class, 'showUsers'])->name('index');
+        Route::delete('/{user}', [AdminController::class, 'destroy'])->name('destroy');
+        Route::post('/add-coordinator', [AdminController::class, 'addCoordinator'])->name('add-coordinator');
+    });
+
+    // Profiles
+    Route::get('/profile', [AdminController::class, 'showProfile'])->name('profile');
+    Route::get('/studentprofile/{student_id}', [AdminController::class, 'showStudentProfile'])->name('studentprofile');
     Route::get('/admin-reports', [AdminController::class, 'showReports'])->name('admin-reports');
 
 });

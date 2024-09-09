@@ -20,7 +20,6 @@ class Section extends Model
         'lesson_id',
         'title',
         'content',
-        'order'
     ];
     public function lessons(){
         return $this->belongsTo(Lesson::class,'lesson_id','lesson_id');
@@ -41,4 +40,5 @@ class Section extends Model
     public function questions(){
         return $this->hasMany(Question::class,'section_id');
     }
+    
 }

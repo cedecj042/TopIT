@@ -9,7 +9,7 @@
 
         <main class="col-md-9 ms-sm-auto col-lg-10 px-md-5">
             <div class="pt-5 mt-3 mb-3">
-                <a href="{{route('admin-course')}}"
+                <a href="{{route('admin.course.index')}}"
                     class=" d-flex flex-row text-decoration-none align-content-center"><span
                         class="material-symbols-outlined">arrow_back</span>Back</a>
             </div>
@@ -39,8 +39,13 @@
                     </div>
                 @endif
                 <h4 class="fw-bold">List of PDF</h4>
-                <livewire:pdf-table theme="bootstrap-5" :courseId="$course->course_id" />
+                @if ($hasPdfs)
+                    <livewire:pdf-table theme="bootstrap-5" :course_id="$course->course_id" />
+                @else
+                    <p>No PDFs found for this course.</p>
+                @endif
             </div>
+            
             <div class="modal fade" id="uploadModal" tabindex="-1" aria-labelledby="uploadModalLabel"
                 aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
@@ -49,7 +54,7 @@
                             <h5 class="modal-title" id="uploadModalLabel">Upload Materials</h5>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
-                        <form method="POST" action="{{ route('upload-pdf') }}" enctype="multipart/form-data">
+                        <form method="POST" action="{{ route('admin.course.pdf.upload') }}" enctype="multipart/form-data">
                             @csrf
                             <div class="modal-body">
                                 <div class="mb-3">

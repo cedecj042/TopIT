@@ -2,9 +2,11 @@
 
 namespace App\Providers;
 
+use App\Livewire\EditModule;
 use Illuminate\Support\ServiceProvider;
 use App\Services\FastApiService;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Livewire\Livewire;
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -22,7 +24,5 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        //
-
     }
 }

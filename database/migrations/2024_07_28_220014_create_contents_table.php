@@ -12,8 +12,10 @@ return new class extends Migration
         $table->id('table_id');
         $table->unsignedBigInteger('tableable_id')->nullable();
         $table->string('tableable_type')->nullable();
-        $table->json('content');
+        $table->longText('description')->nullable();
+        $table->longText('image_base64')->nullable();
         $table->string('caption')->nullable();
+        $table->integer('order')->nullable();
         $table->timestamps();
     });
 
@@ -21,9 +23,10 @@ return new class extends Migration
         $table->id('figure_id');
         $table->unsignedBigInteger('figureable_id')->nullable();
         $table->string('figureable_type')->nullable();
-        $table->string('description')->nullable();
-        $table->json('metadata')->nullable();
+        $table->longText('description')->nullable();
+        $table->longText('image_base64')->nullable();
         $table->string('caption')->nullable();
+        $table->integer('order')->nullable();
         $table->timestamps();
     });
 
@@ -31,9 +34,10 @@ return new class extends Migration
         $table->id('code_id');
         $table->unsignedBigInteger('codeable_id')->nullable();
         $table->string('codeable_type')->nullable();
-        $table->string('description')->nullable();
-        $table->json('metadata')->nullable();
+        $table->longText('description')->nullable();
+        $table->longText('image_base64')->nullable();
         $table->string('caption')->nullable();
+        $table->integer('order')->nullable();
         $table->timestamps();
     });
 

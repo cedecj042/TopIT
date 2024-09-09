@@ -16,7 +16,6 @@ class Lesson extends Model
         'module_id',
         'title',
         'content',
-        'order'
     ];
     
     public function modules(){

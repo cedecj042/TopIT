@@ -38,7 +38,7 @@ class PdfController extends Controller
             $file = $request->file('pdf_file');
             $fileName = $file->getClientOriginalName();
             $filePath = $file->storeAs('', $fileName, 'pdfs');
-
+        
             Log::info('File stored at: ' . $filePath);
 
             $pdf = $this->savePdfToDatabase($request, $fileName, $filePath);
@@ -82,6 +82,7 @@ class PdfController extends Controller
             'course_id' => $request->course_id,
             'file_name' => $fileName,
             'file_path' => $filePath,
+            'status' => 'Uploading',
             'uploaded_by' => Auth::user()->userable->firstname . ' ' . Auth::user()->userable->lastname,
         ]);
 
@@ -114,8 +115,4 @@ class PdfController extends Controller
         }
     }
 
-    public function storeProcessedPdf()
-    {
-
-    }
 }

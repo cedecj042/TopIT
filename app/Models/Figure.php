@@ -15,8 +15,8 @@ class Figure extends Model
         'figureable_id', 
         'figureable_type', 
         'description',
-        'metadata',
-        'caption'
+        'caption',
+        'image_base64'
     ];
     public function figureable(){
         return $this->morphTo();

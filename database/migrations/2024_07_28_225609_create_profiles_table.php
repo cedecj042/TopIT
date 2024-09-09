@@ -21,7 +21,8 @@ return new class extends Migration
             $table->integer('age')->nullable();
             $table->string('address')->nullable();
             $table->string('school');
-            $table->integer('school_year');
+            $table->string('course');
+            $table->string('school_year');
             $table->timestamps();
         });
         Schema::create('admins', function (Blueprint $table) {

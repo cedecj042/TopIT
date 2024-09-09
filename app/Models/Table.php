@@ -14,8 +14,9 @@ class Table extends Model
     protected $fillable = [
         'tableable_id', 
         'tableable_type', 
-        'content',
-        'caption'
+        'description',
+        'caption',
+        'image_base64'
     ];
     public function tableable(){
         return $this->morphTo();

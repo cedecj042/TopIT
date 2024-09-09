@@ -37,11 +37,11 @@ class AdminController extends Controller
 
             if ($user->userable_type === 'App\Models\Admin') {
                 \Log::info('Authenticated user is an Admin.', ['user_id' => $user->user_id]);
-                return redirect()->intended('admin-dashboard');
+                return redirect()->route('admin.dashboard');
             } else {
                 Auth::logout();
                 \Log::warning('Access restricted. User is not an Admin.', ['user_id' => $user->user_id]);
-                return redirect()->route('admin-login')->withErrors(['username' => 'Access restricted to admins only.']);
+                return redirect()->route('admin.login')->withErrors(['username' => 'Access restricted to admins only.']);
             }
         }
         \Log::warning('Admin authentication failed for username.', ['username' => $validated['username']]);
@@ -57,7 +57,7 @@ class AdminController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('admin-login');
+        return redirect()->route('admin.login');
     }
     public function showReviewer()
     {
@@ -70,7 +70,11 @@ class AdminController extends Controller
         return view('admin.ui.dashboard', compact('students', 'school_years'));
     }
 
-    
+    public function showQuestionBank()
+    {
+        $questions = Question::with('questionType', 'questionCategory')->get();
+        return view('admin.ui.question-bank', compact('questions'));
+    }
 
     public function showUsers()
     {
@@ -81,7 +85,7 @@ class AdminController extends Controller
     public function destroy(User $user)
     {
         $user->delete();
-        return redirect()->route('admin-users')->with('success', 'User deleted successfully');
+        return redirect()->route('admin.users')->with('success', 'User deleted successfully');
     }
 
     public function addCoordinator(Request $request)

@@ -14,7 +14,6 @@ class Module extends Model
         'course_id',
         'title',
         'content',
-        'order'
     ];
 
     
@@ -24,5 +23,9 @@ class Module extends Model
 
     public function pdfs(){
         return $this->belongsTo(Pdf::class,'pdf_id','pdf_id');
+    }
+    public function course()
+    {
+        return $this->belongsTo(Course::class, 'course_id');
     }
 }

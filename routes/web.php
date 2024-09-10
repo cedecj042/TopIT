@@ -30,8 +30,6 @@ Route::middleware('auth')->group(function () {
 });
 
 Route::middleware('student')->group(function () {
-    Route::view('/welcomepage', 'student.ui.welcomepage')->name('welcomepage');
-    Route::view('/postpretest', 'student.ui.postpretest')->name('postpretest');
 
     Route::view('/dashboard', 'student.ui.dashboard')->name('dashboard');
     Route::get('/course', [StudentCourseController::class, 'showStudentCourse'])->name('student-course');
@@ -40,8 +38,14 @@ Route::middleware('student')->group(function () {
     Route::view('/test', 'student.ui.test')->name('test');
     Route::view('/profile', 'student.ui.profile')->name('profile');
 
+    Route::view('/welcomepage', 'student.ui.welcomepage')->name('welcomepage');
+    Route::get('/pretest/start', [PretestController::class, 'startPretest'])->name('pretest.start');
     Route::get('/pretest/{number}', [PretestController::class, 'showQuestion'])->name('pretest.question');
+    Route::post('/pretest/{number}', [PretestController::class, 'submitQuestion'])->name('pretest.submit');
+    Route::get('/review-pretest', [PretestController::class, 'reviewPretest'])->name('pretest.review');
+    Route::get('/finish-pretest', [PretestController::class, 'showFinishAttempt'])->name('finish.pretest');
 
+    // Route::get('/pretest/result', [PretestController::class, 'showResult'])->name('postpretest');
 });
 
 
@@ -99,7 +103,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/generate', [QuestionController::class, 'viewGenerate'])->name('generate');
         Route::post('/send', [QuestionController::class, 'generateQuestions'])->name('send');
     });
-    
 
     // Users
     Route::prefix('users')->name('users.')->group(function () {

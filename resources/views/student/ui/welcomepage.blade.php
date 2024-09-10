@@ -19,7 +19,7 @@
                 <h1 class="mb-4">Hi, {{ Auth::user()->userable->firstname }}!</h1>
                 <p class="fs-5">Welcome to TopIT. We're excited to help you on your journey toward mastering the key concepts and skills required for the TOPCIT exam.</p>
                 <p class="fs-5 mb-4">First, let’s take a quick <strong>assessment test</strong>. This will help us understand your current proficiency across various domains.</p>
-                <a href="{{ route('pretest.question', ['number' => 1]) }}" class="btn btn-primary w-50 p-2">Proceed to Pretest</a>
+                <a href="{{ route('pretest.start') }}" class="btn btn-primary w-50 p-2">Proceed to Pretest</a>
             </div>
         </div>
         <div class="col-md-6 text-center" style="margin-left: -5rem;">

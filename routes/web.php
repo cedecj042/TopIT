@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Admin\ProcessedPdfController;
+use App\Http\Controllers\Admin\ProcessQuestionController;
 use App\Http\Controllers\Admin\QuestionController;
 use App\Http\Controllers\Admin\SectionController;
 use App\Http\Controllers\Admin\VectorController;
@@ -43,6 +44,7 @@ Route::prefix('admin')->name('admin.')->group(function () {
     Route::get('/login', [AdminController::class, 'showLogin'])->name('login');
     Route::post('/login', [AdminController::class, 'login']);
     Route::post('/store-processed-pdf', [ProcessedPdfController::class, 'store'])->name('store-pdf');
+    Route::post('/store-questions', [ProcessQuestionController::class, 'storeQuestions'])->name('store-questions');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
@@ -58,9 +60,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::post('/pdf/upload', [PdfController::class, 'uploadPdf'])->name('pdf.upload');
         Route::delete('/pdf/delete/{id}', [PdfController::class, 'deletePdf'])->name('pdf.delete');
     });
-    // Route::get('/admin-question-bank', [AdminController::class, 'showQuestionBank'])->name('admin-question-bank');
-    Route::get('/admin-question-bank-list', [QuestionsController::class, 'showQuestionBank'])->name('admin-question-bank-list');
-    Route::get('/admin-question-bank-manage', [QuestionsController::class, 'showQuestionBankManage'])->name('admin-question-bank-manage');
     
     // Modules
     Route::prefix('modules')->name('modules.')->group(function () {
@@ -88,12 +87,14 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Question Bank
     Route::prefix('questions')->name('questions.')->group(function (){
         Route::get('/', [QuestionController::class, 'showQuestions'])->name('index');
-        Route::get('/edit/{id}', [QuestionController::class, 'editQuestions'])->name('edit');
-        Route::get('/generate', [QuestionController::class, 'viewGenerate'])->name('generate');
+        Route::get('/generate', [QuestionController::class, 'viewGenerateQuestions'])->name('generate');
         Route::post('/send', [QuestionController::class, 'generateQuestions'])->name('send');
+        // Route::get('/admin-question-bank', [AdminController::class, 'showQuestionBank'])->name('admin-question-bank');
+        // Route::get('/bank/list', [QuestionController::class, 'showQuestionBank'])->name('admin-question-bank-list');
+        // Route::get('/manage', [QuestionController::class, 'showQuestionManage'])->name('manage');
+        Route::get('/edit/{id}', [QuestionController::class, 'editQuestions'])->name('edit');
     });
     
-
     // Users
     Route::prefix('users')->name('users.')->group(function () {
         Route::get('/', [AdminController::class, 'showUsers'])->name('index');
@@ -104,6 +105,6 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
     // Profiles
     Route::get('/profile', [AdminController::class, 'showProfile'])->name('profile');
     Route::get('/studentprofile/{student_id}', [AdminController::class, 'showStudentProfile'])->name('studentprofile');
-    Route::get('/admin-reports', [AdminController::class, 'showReports'])->name('admin-reports');
+    Route::get('/reports', [AdminController::class, 'showReports'])->name('reports');
 
 });

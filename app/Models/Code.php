@@ -16,7 +16,8 @@ class Code extends Model
         'codeable_type', 
         'description',
         'caption',
-        'image_base64'
+        'image_base64',
+        'order'
     ];
     public function codeable(){
         return $this->morphTo();

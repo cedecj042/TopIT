@@ -16,7 +16,8 @@ class Table extends Model
         'tableable_type', 
         'description',
         'caption',
-        'image_base64'
+        'image_base64',
+        'order'
     ];
     public function tableable(){
         return $this->morphTo();

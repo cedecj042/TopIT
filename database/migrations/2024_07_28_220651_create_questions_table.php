@@ -35,8 +35,7 @@ return new class extends Migration
             $table->id('question_id');
             $table->foreignID('course_id')->references('course_id')->on('courses')->cascadeOnDelete();
             $table->unsignedBigInteger('questionable_id'); // Standard naming for polymorphic ID
-            $table->string('questionable_type'); // Standard naming for polymorphic type    
-            $table->float('difficulty_numeric');
+            $table->string('questionable_type'); // Standard naming for polymorphic type
             $table->string('difficulty_level');
             $table->string('question');
             $table->float('discrimination_index');

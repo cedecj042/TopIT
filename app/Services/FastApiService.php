@@ -114,4 +114,32 @@ class FastApiService
         }
     }
 
+    public function generateQuestions($jsonContent)
+    {
+        try {
+            $response = Http::withHeaders([
+                'Content-Type' => 'application/json',
+                'Accept' => 'application/json',
+            ])
+                ->post("{$this->baseUrl}/create-questions/", json_decode($jsonContent, true));
+
+            // Check the response status and log or handle accordingly
+            if ($response->successful()) {
+                // Handle success
+            } else {
+                // Handle failure
+                Log::error('Request failed', [
+                    'status' => $response->status(),
+                    'body' => $response->body(),
+                ]);
+            }
+        } catch (\GuzzleHttp\Exception\GuzzleException $e) {
+            // Log the error or handle exception
+            Log::error('Exception occurred while sending data to FastAPI', [
+                'error' => $e->getMessage(),
+                'data_sent' => $jsonContent
+            ]);
+        }
+    }
+
 }

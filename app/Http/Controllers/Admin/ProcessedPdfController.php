@@ -32,14 +32,7 @@ class ProcessedPdfController extends Controller
         DB::beginTransaction();
 
         try {
-            $pdf = Pdf::where('course_id', $request->course_id)
-                ->where('file_name', $request->file_name)
-                ->firstOrFail();
-
-            // Update the status to 'done'
-            $pdf->status = 'done';
-            $pdf->save();
-
+            
             foreach ($request->processed_data['Modules'] as $moduleData) {
                 Log::info('Processing module', ['module_title' => $moduleData['Title']]);
 
@@ -72,7 +65,7 @@ class ProcessedPdfController extends Controller
                         ]);
 
                         // Define the content types to process
-                        $contentTypes = ['Tables', 'Figures', 'Code'];
+                        $contentTypes = ['Tables', 'Figures', 'Codes'];
 
                         foreach ($contentTypes as $contentType) {
                             // Check if the content type exists in the current section and is an array
@@ -98,7 +91,7 @@ class ProcessedPdfController extends Controller
                                 'content' => json_encode($subsectionData['Content'])
                             ]);
 
-                            $contentTypes = ['Tables', 'Figures', 'Code'];
+                            $contentTypes = ['Tables', 'Figures', 'Codes'];
 
                             foreach ($contentTypes as $contentType) {
                                 // Check if the content type exists in the current section and is an array
@@ -116,6 +109,15 @@ class ProcessedPdfController extends Controller
             }
 
             DB::commit();
+
+            $pdf = Pdf::where('course_id', $request->course_id)
+                ->where('file_name', $request->file_name)
+                ->firstOrFail();
+
+            // Update the status to 'done'
+            $pdf->status = 'Done';
+            $pdf->save();
+            response()->json(['message' => 'Successfully stored processed PDF data'], 201);
             Log::info('Successfully stored processed PDF data');
             return response()->json(['message' => 'Processed PDF data stored successfully'], 201);
         } catch (\Exception $e) {
@@ -127,18 +129,14 @@ class ProcessedPdfController extends Controller
 
     private function processContent($contentItem, $parent)
     {
-
-        Log::info('Processing content item', ['contentItem' => $contentItem]);
-
         // Check if the content type is Figures, Tables, or Code
         $contentData = [
             'image_base64' => $contentItem['image_base64'] ?? null,
             'coordinates' => $contentItem['coordinates'] ?? null,
-            'before_caption' => $contentItem['before_caption'] ?? "",
-            'after_caption' => $contentItem['after_caption'] ?? "",
-            'order' => $contentItem['order']
+            'caption' => $contentItem['before_caption'] ?? $contentItem['after_caption'] ?? "",
+            'order' => isset($contentItem['order']) ? (int) $contentItem['order'] : null,
         ];
-        Log::info('Processing content item', ['contentData' => $contentData]);
+        Log::info('Processing content item', ['contentData' => $contentData['caption']]);
         // Call the appropriate processing function
         switch ($contentItem['type']) {
             case 'Figures':

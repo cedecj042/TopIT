@@ -4,7 +4,7 @@
 
 @section('page-content')
     <div class="container-fluid">
-        <div class="row">
+        <div class="row w-100">
             @include('admin.shared.admin-sidebar')
             <main class="col-md-9 ms-sm-auto col-lg-10 p-0">
                 <div class="row p-3">

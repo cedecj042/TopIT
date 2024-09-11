@@ -9,7 +9,7 @@ class MultiChoiceSingle extends Model
     use HasFactory;
     
     protected $primaryKey = 'multichoice_single_id';
-    
+    protected $table = 'multichoice_single';
     protected $fillable = [
         'name', 
         'answer', 

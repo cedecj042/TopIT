@@ -9,6 +9,7 @@ class MultiChoiceMany extends Model
 {
     use HasFactory;
     protected $primaryKey = 'multichoice_many_id';
+    protected $table = 'multichoice_many';
     protected $fillable = [
         'name', 
         'answers', 

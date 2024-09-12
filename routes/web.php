@@ -22,7 +22,7 @@ Route::middleware('guest')->group(function () {
     Route::post('/register', [StudentController::class, 'registerStudent']);
 
     Route::get('/login', [StudentController::class, 'showLoginStudent'])->name('login');
-    Route::post('/login', [StudentController::class, 'loginStudent']);
+    Route::post('/login', [StudentController::class, 'loginStudent'])->name('student.login');
 });
 
 Route::middleware('auth')->group(function () {
@@ -100,10 +100,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/', [QuestionController::class, 'showQuestions'])->name('index');
         Route::get('/generate', [QuestionController::class, 'viewGenerateQuestions'])->name('generate');
         Route::post('/send', [QuestionController::class, 'generateQuestions'])->name('send');
+        Route::post('/update/{id}', [QuestionController::class, 'updateQuestion'])->name('update');
         // Route::get('/admin-question-bank', [AdminController::class, 'showQuestionBank'])->name('admin-question-bank');
         // Route::get('/bank/list', [QuestionController::class, 'showQuestionBank'])->name('admin-question-bank-list');
         // Route::get('/manage', [QuestionController::class, 'showQuestionManage'])->name('manage');
-        Route::get('/edit/{id}', [QuestionController::class, 'editQuestions'])->name('edit');
+        Route::get('/edit/{id}', [QuestionController::class, 'editQuestion'])->name('edit');
+        
     });
     
 

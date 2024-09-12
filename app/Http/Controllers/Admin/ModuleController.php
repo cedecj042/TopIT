@@ -60,5 +60,29 @@ class ModuleController extends Controller
         // Redirect or show a success message
         return redirect()->back()->with('message', 'The selected courses and modules are being processed.');
     }
-
+    public function showModuleDetail($id)
+    {
+        $module = Module::with([
+            'lessons' => function ($query) {
+                $query->with([
+                    'sections' => function ($query) {
+                        $query->with([
+                            'subsections' => function ($query) {
+                                $query->with([
+                                    'tables.images',
+                                    'figures.images',
+                                    'codes.images'
+                                ]);
+                            },
+                            'tables.images',
+                            'figures.images',
+                            'codes.images'
+                        ]);
+                    }
+                ]);
+            }
+        ])->findOrFail($id);
+        $moduleContent = json_decode($module->content, true);
+        return view('admin.ui.course.module.sample-edit', compact('module','moduleContent'));
+    }
 }

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\GenerateQuestionJob;
 use App\Jobs\ProcessCourse;
 use App\Models\Course;
+use App\Models\Difficulty;
 use App\Models\Question;
 use Dotenv\Exception\ValidationException;
 use GenerateQuestionsJob;
@@ -22,7 +23,11 @@ class QuestionController extends Controller
     }
     public function editQuestion($id)
     {
+        $courses = Course::all();
+        $difficulties = Difficulty::all();
+        $question = Question::with('difficulty')->findOrFail($id);
 
+        return view('admin.ui.questions.edit', compact('question','courses','difficulties'));
     }
     // public function viewGenerate()
     // {
@@ -65,4 +70,43 @@ class QuestionController extends Controller
         $questions = Question::with('questionType', 'questionCategory')->get();
         return view('admin.ui.question-bank', compact('questions'));
     }
+    public function updateQuestion(Request $request, $id)
+    {
+        $request->validate([
+            'course_id' => 'required|exists:courses,course_id',
+            'difficulty_id' => 'required|exists:difficulty,difficulty_id',
+            'question' => 'required|string',
+            'discrimination_index' => 'required|numeric',
+        ]);
+
+        $question = Question::findOrFail($id);
+
+        // Update question data
+        $question->update([
+            'course_id' => $request->course_id,
+            'difficulty_id' => $request->difficulty_id,
+            'question' => $request->question,
+            'discrimination_index' => $request->discrimination_index,
+        ]);
+
+        // Handle the specific question type
+        if ($question->questionable_type == 'App\\Models\\Identification') {
+            $question->questionable->update([
+                'answer' => $request->correctAnswer,
+            ]);
+        } elseif ($question->questionable_type == 'App\\Models\\MultiChoiceSingle') {
+            $question->questionable->update([
+                'answer' => $request->correctAnswer,
+                'choices' => json_encode(explode(',', $request->choices)),
+            ]);
+        } elseif ($question->questionable_type == 'App\\Models\\MultiChoiceMany') {
+            $question->questionable->update([
+                'answers' => json_encode(explode(',', $request->correctAnswer)),
+                'choices' => json_encode(explode(',', $request->choices)),
+            ]);
+        }
+
+        return redirect()->route('admin.questions.index')->with('message', 'Question updated successfully.');
+    }
+
 }

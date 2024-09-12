@@ -44,5 +44,12 @@ class DatabaseSeeder extends Seeder
             'userable_id' => $admin->admin_id,
             'userable_type' => Admin::class,
         ]);
+
+        $this->call([
+            DifficultySeeder::class,
+            CourseSeeder::class,
+            QuestionSeeder::class,
+            StudentSeeder::class
+        ]);
     }
 }

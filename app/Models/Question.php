@@ -14,7 +14,8 @@ class Question extends Model
 {
     use HasFactory;
     protected $primaryKey='question_id';
-    protected $fillable = ['course_id', 'questionable_id', 'questionable_type', 'difficulty_level', 'question', 'discrimination_index'];
+    protected $fillable = ['course_id', 'questionable_id', 'questionable_type', 'difficulty_id', 'question', 'discrimination_index'];
+
     public function courses(){
        return $this->belongsTo(Course::class,'course_id','course_id');    
     }
@@ -24,5 +25,9 @@ class Question extends Model
     public function questionable()
     {
         return $this->morphTo();
+    }
+    public function difficulty()
+    {
+        return $this->belongsTo(Difficulty::class, 'difficulty_id', 'difficulty_id');
     }
 }

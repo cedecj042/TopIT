@@ -87,17 +87,11 @@ class GenerateQuestionJob implements ShouldQueue
                 }
             }
         }
-        Log::info('Final Questions Data:', $questionsData);
-        // Step 1: Convert the data array to JSON
         $jsonContent = json_encode(array_values($questionsData), JSON_PRETTY_PRINT);
-        $uniqueFilename = 'questions_' . now()->format('Y_m_d_His') . '.json'; 
-        Storage::disk('local')->put($uniqueFilename, $jsonContent);
-
-        // Step 4: Send the JSON content to FastAPI service for question generation
         $fastApiService->generateQuestions($jsonContent);
 
         // Step 5: Log the operation
-        Log::info("Questions generated, saved as $uniqueFilename, and sent to FastAPI successfully.");
+        Log::info("Questions generated and sent to FastAPI successfully.");
     }
     protected function courseExists($questionsData, $courseIdToCheck) {
         $found = array_filter($questionsData, function ($course) use ($courseIdToCheck) {

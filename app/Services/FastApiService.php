@@ -68,7 +68,7 @@ class FastApiService
             }
 
             // Send the image to the FastAPI endpoint
-            $response = Http::asMultipart()
+            $response = Http::asMultipart()->timeout(30)
                 ->attach('image', file_get_contents($imagePath), basename($imagePath))
                 ->post("{$this->baseUrl}/process-image/");
 

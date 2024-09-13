@@ -18,7 +18,7 @@
             </div>
             <div class="col d-flex align-items-center form-bg">
                 <div class="w-100 px-5 mx-4">
-                    <form method="POST" action="{{ route('login') }}">
+                    <form method="POST" action="{{ route('student.login') }}">
                         @csrf
                         <h3 class="fw-bold">Login</h3>
                         <div class="mb-3">

@@ -12,7 +12,7 @@
     <div class="row d-flex justify-content-center mb-5">
         <div class="col-6 mb-5">
             <!-- <div class="mt-4 text-right d-flex flex-column gap-2"> -->
-            <a href="{{ route('login') }}" class="text-dark text-decoration-none d-flex align-items-center gap-2 neg">
+            <a href="{{ route('student.login') }}" class="text-dark text-decoration-none d-flex align-items-center gap-2 neg">
                 <span class="material-symbols-outlined icons">arrow_back</span>Back
             </a>
             <form method="POST" action="{{ route('register') }}" class="row g-3 mb-5" enctype="multipart/form-data">

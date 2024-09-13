@@ -41,13 +41,14 @@ Route::middleware('student')->group(function () {
     Route::view('/profile', 'student.ui.profile')->name('profile');
 
     Route::view('/welcomepage', 'student.ui.welcomepage')->name('welcomepage');
-    Route::get('/pretest', [PretestController::class, 'startPretest'])->name('pretest.start');
-    Route::get('/pretest/questions', [PretestController::class, 'showQuestions'])->name('pretest.questions');
-    Route::post('/pretest/submit', [PretestController::class, 'submitPretest'])->name('pretest.submit');
-    // Route::get('/pretest/{number}', [PretestController::class, 'showQuestion'])->name('pretest.question');
-    // Route::post('/pretest/{number}', [PretestController::class, 'submitQuestion'])->name('pretest.submit');
-    Route::get('/review-pretest', [PretestController::class, 'reviewPretest'])->name('pretest.review');
-    Route::get('/finish-pretest', [PretestController::class, 'showFinishAttempt'])->name('finish.pretest');
+
+    Route::prefix('pretest')->group(function () {
+        Route::get('/start', [PretestController::class, 'startPretest'])->name('pretest.start');
+        Route::get('/questions/{courseIndex?}', [PretestController::class, 'showQuestions'])->name('pretest.questions');
+        Route::post('/submit', [PretestController::class, 'submitAnswers'])->name('pretest.submit');
+        Route::get('/finish', [PretestController::class, 'showFinishAttempt'])->name('pretest.finish');
+        Route::get('/review', [PretestController::class, 'reviewPretest'])->name('pretest.review');
+    });
 
 });
 
@@ -107,7 +108,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         // Route::get('/bank/list', [QuestionController::class, 'showQuestionBank'])->name('admin-question-bank-list');
         // Route::get('/manage', [QuestionController::class, 'showQuestionManage'])->name('manage');
         Route::get('/edit/{id}', [QuestionController::class, 'editQuestion'])->name('edit');
-        
+
     });
 
 

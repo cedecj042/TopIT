@@ -6,6 +6,10 @@ use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
+use App\Models\Course;
+use App\Models\Question;
+use App\Models\PretestAttempt;
 
 
 class PretestController extends Controller
@@ -17,81 +21,108 @@ class PretestController extends Controller
         $this->questions = $this->getQuestions();
     }
 
-    // public function showQuestion($number)
-    // {
-    //     $number = (int) $number;
-    //     $totalQuestions = count($this->questions);
-
-    //     if ($number < 1 || $number > $totalQuestions) {
-    //         return redirect()->route('pretest.question', ['number' => 1]);
-    //     }
-
-    //     $question = $this->questions[$number - 1];
-    //     $answers = Session::get('answers', []);
-
-    //     return view('student.ui.pretest', [
-    //         'number' => $number,
-    //         'question' => $question,
-    //         'questions' => $this->questions,
-    //         'answers' => $answers,
-    //         'hasPrev' => $number > 1,
-    //         'hasNext' => $number < $totalQuestions,
-    //         'allAnswered' => count($answers) === $totalQuestions,
-    //     ]);
-    // }
-
-    public function showQuestions()
+    private function getQuestions()
     {
-        $answers = Session::get('answers', []); // Retrieve any saved answers
+        return Question::all(); 
+    }
+
+
+    public function startPretest()
+    {
+        Session::forget('pretest_progress');
+        Session::forget('pretest_answers');
+
+        $courses = Course::all();
+
+        $pretestProgress = [
+            'current_course_index' => 0,
+            'courses' => $courses->pluck('course_id')->toArray(),
+        ];
+
+        Session::put('pretest_progress', $pretestProgress);
+
+        return redirect()->route('pretest.questions');
+    }
+
+    public function showQuestions($courseIndex = null)
+    {
+        $progress = Session::get('pretest_progress');
+        $answers = Session::get('pretest_answers', []);
+
+        if ($courseIndex !== null) {
+            $progress['current_course_index'] = $courseIndex;
+            Session::put('pretest_progress', $progress);
+        }
+
+        $currentCourseId = $progress['courses'][$progress['current_course_index']];
+        $course = Course::findOrFail($currentCourseId);
+
+        $courses = Course::all();
+
+        $questions = Question::where('course_id', $currentCourseId)
+            ->with(['questionable', 'difficulty'])
+            ->take(5)
+            ->get();
+
+        $isLastCourse = $progress['current_course_index'] == count($progress['courses']) - 1;
+
+        Log::info('Current Course ID:', ['current_course_id' => $currentCourseId]);
+        Log::info('Answers:', ['answers' => $answers]);
 
         return view('student.ui.pretest', [
-            'questions' => $this->questions,
-            'answers' => $answers
+            'course' => $course,
+            'questions' => $questions,
+            'answers' => $answers,
+            'currentCourseIndex' => $progress['current_course_index'] + 1,
+            'totalCourses' => count($progress['courses']),
+            'isLastCourse' => $isLastCourse,
+            'courses' => $courses,
         ]);
     }
 
-    // public function submitQuestion(Request $request, $number)
-    // {
-    //     $number = (int) $number;
-    //     $totalQuestions = count($this->questions);
-
-    //     $answers = Session::get('answers', []);
-    //     $answers["question_{$number}"] = $request->input('answer');
-    //     Session::put('answers', $answers);
-
-    //     if ($request->input('action') === 'finish' || $number === $totalQuestions) {
-    //         return $this->finishAttempt();
-    //         // redirect()->route('finishAttempt');
-    //     }
-
-    //     return redirect()->route('pretest.question', ['number' => $number + 1]);
-    // }
-
-    public function submitPretest(Request $request)
+    public function submitAnswers(Request $request)
     {
-        $answers = $request->input('answers', []);
-        Session::put('answers', $answers);
+        $progress = Session::get('pretest_progress');
+        $answers = Session::get('pretest_answers', []);
 
-        // middleware
-        // $user = Auth::user();
-        // $user->pretest_completed = true;
-        // $user->save();
+        foreach ($request->input('answers', []) as $questionId => $answer) {
+            $answers[$questionId] = $answer;
+        }
 
-        return $this->finishAttempt();
+        Session::put('pretest_answers', $answers);
+
+        $progress['current_course_index']++;
+        Session::put('pretest_progress', $progress);
+
+        if ($progress['current_course_index'] >= count($progress['courses'])) {
+            return $this->finishAttempt();
+        }
+
+        return redirect()->route('pretest.questions');
     }
-
 
     public function finishAttempt()
     {
-        $answers = Session::get('answers', []);
+        $answers = Session::get('pretest_answers', []);
         $score = $this->calculateScore($answers);
-        $totalQuestions = count($this->questions);
+        $totalQuestions = Question::whereIn('course_id', Session::get('pretest_progress.courses'))->count();
+
+        $studentId = Auth::id();
+        if ($studentId) {
+            PretestAttempt::create([
+                'student_id' => $studentId,
+                'answers' => json_encode($answers),
+                'score' => $score,
+            ]);
+        } else {
+            Log::warning('Attempt to store pretest attempt without an authenticated user.');
+        }
 
         Session::put('quiz_score', $score);
         Session::put('total_questions', $totalQuestions);
         Session::put('quiz_completed', true);
 
-        return redirect()->route('finish.pretest');
+        return redirect()->route('pretest.finish');
     }
 
     public function showFinishAttempt()
@@ -105,46 +136,45 @@ class PretestController extends Controller
         ]);
     }
 
-
-
-    private function updateAllAnsweredStatus()
-    {
-        $answers = session('answers', []);
-        $totalQuestions = count($this->questions);
-        $allAnswered = count($answers) == $totalQuestions;
-        session(['allAnswered' => $allAnswered]);
-        return $allAnswered;
-    }
-
-    public function startPretest()
-    {
-        session()->forget('answers');
-        session()->forget('allAnswered');
-        session()->forget('quiz_completed');
-        session()->forget('quiz_score');
-        session()->forget('total_questions');
-
-        return redirect()->route('pretest.questions', ['number' => 1]);
-    }
-
     public function reviewPretest()
     {
-        $answers = Session::get('answers', []);
-        $questions = $this->getQuestions();
+        $answers = Session::get('answers', []); 
+        $courses = Course::all(); 
 
         $reviewData = [];
-        foreach ($questions as $index => $question) {
-            $userAnswer = $answers["question_" . ($index + 1)] ?? null;
-            $isCorrect = $userAnswer === $question['correct_answer'];
-            $reviewData[] = [
-                'question' => $question,
-                'user_answer' => $userAnswer,
-                'is_correct' => $isCorrect,
-            ];
+
+        if ($courses->isEmpty()) {
+            Log::warning('No courses found for review pretest.');
+        }
+
+        foreach ($courses as $course) {
+            $questions = Question::where('course_id', $course->course_id)
+                ->with(['questionable', 'difficulty'])
+                ->get();
+
+            if ($questions->isEmpty()) {
+                Log::warning('No questions found for course ID: ' . $course->course_id);
+            }
+
+            foreach ($questions as $index => $question) {
+                $questionId = "question_" . ($index + 1);
+                $userAnswer = $answers[$questionId] ?? null;
+                $isCorrect = $userAnswer === $question->correct_answer;
+                $reviewData[] = [
+                    'question' => [
+                        'text' => $question->text,
+                        'options' => json_decode($question->options, true),
+                        'correct_answer' => $question->correct_answer,
+                    ],
+                    'user_answer' => $userAnswer,
+                    'is_correct' => $isCorrect,
+                ];
+            }
         }
 
         return view('student.ui.reviewpretest', [
             'review_data' => $reviewData,
+            'courses' => $courses,
         ]);
     }
 
@@ -161,44 +191,5 @@ class PretestController extends Controller
             }
         }
         return $score;
-    }
-
-    private function getQuestions()
-    {
-        return [
-            [
-                'id' => 1,
-                'text' => 'Which of the following data structures is most appropriate for implementing a priority queue?',
-                'options' => [
-                    'a' => 'Stack',
-                    'b' => 'Queue',
-                    'c' => 'Linked List',
-                    'd' => 'Heap',
-                ],
-                'correct_answer' => 'd'
-            ],
-            [
-                'id' => 2,
-                'text' => 'In Object-Oriented Programming, which principle is used to hide the internal details of an object?',
-                'options' => [
-                    'a' => 'Abstraction',
-                    'b' => 'Encapsulation',
-                    'c' => 'Inheritance',
-                    'd' => 'Polymorphism',
-                ],
-                'correct_answer' => 'b'
-            ],
-            [
-                'id' => 3,
-                'text' => 'Which of the following protocols is used for secure communication over a computer network?',
-                'options' => [
-                    'a' => 'HTTP',
-                    'b' => 'FTP',
-                    'c' => 'HTTPS',
-                    'd' => 'SMTP',
-                ],
-                'correct_answer' => 'c'
-            ]
-        ];
     }
 }

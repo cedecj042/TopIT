@@ -13,63 +13,97 @@
     </nav>
     <div class="container my-5">
         <div class="row">
-            <div class="col-12">
+            <div class="col-12 d-flex justify-content-between align-items-center">
                 <h2 class="mb-4">Assessment Test</h2>
+                <div class="text-end">
+                    <h5>{{ $course->title }}</h5>
+                    <p>Course {{ $currentCourseIndex }} of {{ $totalCourses }}</p>
+                </div>
             </div>
         </div>
+    </div>
+    
+    <div class="container my-5">
         <div class="row">
+            <div class="col-lg-3">
+                <!-- Sidebar -->
+                <nav class="nav flex-column shadow-sm p-3 mb-5 bg-white rounded">
+                    @foreach ($courses as $index => $course)
+                        <a class="nav-link {{ $currentCourseIndex == $index + 1 ? 'active' : '' }}"
+                           href="{{ route('pretest.questions', ['courseIndex' => $index]) }}">
+                            {{ $course->title }}
+                        </a>
+                    @endforeach
+                </nav>
+            </div>
             <div class="col-lg-9">
-                <form action="{{ route('pretest.submit') }}" method="POST" id="assessmentForm">
+                <!-- Form-->
+                <form action="{{ route('pretest.submit') }}" method="POST">
                     @csrf
                     @foreach ($questions as $index => $question)
-                        <!-- Each question will now have its own card -->
                         <div class="card shadow-sm mb-4">
                             <div class="card-body">
                                 <div class="pb-3 mb-3 border-bottom">
                                     <h6 class="text-muted mb-0">Question {{ $index + 1 }} of {{ count($questions) }}</h6>
                                 </div>
-                                <p class="mb-4">{{ $question['text'] }}</p>
-                                @foreach ($question['options'] as $key => $option)
-                                    <div class="form-check mb-3">
-                                        <input class="form-check-input" type="radio" name="answers[{{ $index }}]" 
-                                            id="option{{ $index }}_{{ $key }}" value="{{ $key }}"
-                                            {{ isset($answers[$index]) && $answers[$index] == $key ? 'checked' : '' }}>
-                                        <label class="form-check-label" for="option{{ $index }}_{{ $key }}">
-                                            {{ $option }}
-                                        </label>
+                                <p class="mb-4">{{ $question->question }}</p>
+                                @if ($question->questionable_type === 'App\Models\MultiChoiceSingle')
+                                    @foreach (json_decode($question->questionable->choices) as $key => $option)
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="radio" name="answers[{{ $question->question_id }}]" 
+                                                id="question{{ $question->question_id }}_option{{ $key }}" value="{{ $option }}"
+                                                {{ isset($answers[$question->question_id]) && $answers[$question->question_id] == $option ? 'checked' : '' }}
+                                                title="Option: {{ $option }}">
+                                            <label class="form-check-label" for="question{{ $question->question_id }}_option{{ $key }}">
+                                                {{ $option }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                @elseif ($question->questionable_type === 'App\Models\MultiChoiceMany')
+                                    @foreach (json_decode($question->questionable->choices) as $key => $option)
+                                        <div class="form-check mb-3">
+                                            <input class="form-check-input" type="checkbox" name="answers[{{ $question->question_id }}][]" 
+                                                id="question{{ $question->question_id }}_option{{ $key }}" value="{{ $option }}"
+                                                {{ isset($answers[$question->question_id]) && in_array($option, $answers[$question->question_id]) ? 'checked' : '' }}
+                                                title="Option: {{ $option }}">
+                                            <label class="form-check-label" for="question{{ $question->question_id }}_option{{ $key }}">
+                                                {{ $option }}
+                                            </label>
+                                        </div>
+                                    @endforeach
+                                @elseif ($question->questionable_type === 'App\Models\Identification')
+                                    <div class="form-group">
+                                        <input type="text" class="form-control" name="answers[{{ $question->question_id }}]" 
+                                            value="{{ $answers[$question->question_id] ?? '' }}" placeholder="Enter your answer here"
+                                            title="Your answer for {{ $question->question }}">
                                     </div>
-                                @endforeach
+                                @endif
                             </div>
                         </div>
                     @endforeach
-                    <div class="d-flex justify-content-end mt-4">
-                        <button type="submit" id="finishAttemptBtn" class="btn btn-primary">
-                            Finish Attempt
+                    <div class="d-flex justify-content-between mt-4">
+                        @if ($currentCourseIndex > 1)
+                            <a href="{{ route('pretest.questions', ['courseIndex' => $currentCourseIndex - 2]) }}" class="btn btn-outline-secondary">
+                                Previous
+                            </a>
+                        @endif
+                        <button type="submit" class="btn btn-primary">
+                            {{ $isLastCourse ? 'Finish Attempt' : 'Next' }}
                         </button>
                     </div>
-                </form>
-            </div>
-            <div class="col-lg-3">
-                <div class="card shadow-sm">
-                    <div class="card-body">
-                        <h6 class="mb-3">Questions</h6>
-                        <div class="d-flex flex-wrap gap-2" id="questionButtons">
-                            @for ($i = 1; $i <= count($questions); $i++)
-                                <button class="btn btn-outline-primary rounded-circle {{ isset($answers[$i - 1]) ? 'answered' : '' }}"
-                                    style="width: 40px; height: 40px; padding: 7px 0; font-size: 16px;">
-                                    {{ $i }}
-                                </button>
-                            @endfor
-                        </div>
-                    </div>
-                </div>
+                </form>                
+                
             </div>
         </div>
     </div>
-
     <style>
         body {
             background-color: #f8f9fa;
+        }
+
+        .nav-link.active {
+            background-color: #f8f9fa;
+            font-weight: bold;
         }
 
         .card {
@@ -95,9 +129,6 @@
         }
     </style>
 @endsection
-
-
-
 
 
 {{-- @extends('main')
@@ -223,7 +254,7 @@
             background-color: #0d6efd;
             border-color: #0d6efd;
         }
-    </style>
+    </styl>
 
     <script>
         let answeredQuestions = {!! json_encode($answers) !!};

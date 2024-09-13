@@ -30,6 +30,7 @@ Route::middleware('auth')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 });
 
+
 Route::middleware('student')->group(function () {
 
     Route::view('/dashboard', 'student.ui.dashboard')->name('dashboard');
@@ -40,13 +41,14 @@ Route::middleware('student')->group(function () {
     Route::view('/profile', 'student.ui.profile')->name('profile');
 
     Route::view('/welcomepage', 'student.ui.welcomepage')->name('welcomepage');
-    Route::get('/pretest/start', [PretestController::class, 'startPretest'])->name('pretest.start');
-    Route::get('/pretest/{number}', [PretestController::class, 'showQuestion'])->name('pretest.question');
-    Route::post('/pretest/{number}', [PretestController::class, 'submitQuestion'])->name('pretest.submit');
+    Route::get('/pretest', [PretestController::class, 'startPretest'])->name('pretest.start');
+    Route::get('/pretest/questions', [PretestController::class, 'showQuestions'])->name('pretest.questions');
+    Route::post('/pretest/submit', [PretestController::class, 'submitPretest'])->name('pretest.submit');
+    // Route::get('/pretest/{number}', [PretestController::class, 'showQuestion'])->name('pretest.question');
+    // Route::post('/pretest/{number}', [PretestController::class, 'submitQuestion'])->name('pretest.submit');
     Route::get('/review-pretest', [PretestController::class, 'reviewPretest'])->name('pretest.review');
     Route::get('/finish-pretest', [PretestController::class, 'showFinishAttempt'])->name('finish.pretest');
 
-    // Route::get('/pretest/result', [PretestController::class, 'showResult'])->name('postpretest');
 });
 
 
@@ -71,16 +73,16 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::post('/pdf/upload', [PdfController::class, 'uploadPdf'])->name('pdf.upload');
         Route::delete('/pdf/delete/{id}', [PdfController::class, 'deletePdf'])->name('pdf.delete');
     });
-    
+
     // Modules
     Route::prefix('modules')->name('modules.')->group(function () {
         // Route::view('/store','admin.ui.course.module.vectorize');
-        Route::get('/vector',[ModuleController::class,'vectorShow'])->name('vector.show');
-        Route::post('/vector/upload',[ModuleController::class,'vectorStore'])->name('vector.upload');
+        Route::get('/vector', [ModuleController::class, 'vectorShow'])->name('vector.show');
+        Route::post('/vector/upload', [ModuleController::class, 'vectorStore'])->name('vector.upload');
         Route::get('/', [ModuleController::class, 'showModules'])->name('index');
         Route::post('/update', [ModuleController::class, 'updateModule'])->name('update');
         Route::get('/{id}', [ModuleController::class, 'editModule'])->name('edit');
-        
+
     });
 
     // Lessons
@@ -96,7 +98,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
 
     });
     // Question Bank
-    Route::prefix('questions')->name('questions.')->group(function (){
+    Route::prefix('questions')->name('questions.')->group(function () {
         Route::get('/', [QuestionController::class, 'showQuestions'])->name('index');
         Route::get('/generate', [QuestionController::class, 'viewGenerateQuestions'])->name('generate');
         Route::post('/send', [QuestionController::class, 'generateQuestions'])->name('send');
@@ -105,7 +107,7 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         // Route::get('/manage', [QuestionController::class, 'showQuestionManage'])->name('manage');
         Route::get('/edit/{id}', [QuestionController::class, 'editQuestions'])->name('edit');
     });
-    
+
 
     // Users
     Route::prefix('users')->name('users.')->group(function () {

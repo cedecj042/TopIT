@@ -5,6 +5,7 @@ namespace App\Http\Controllers\student;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Session;
+use Illuminate\Support\Facades\Auth;
 
 
 class PretestController extends Controller
@@ -16,46 +17,68 @@ class PretestController extends Controller
         $this->questions = $this->getQuestions();
     }
 
-    public function showQuestion($number)
+    // public function showQuestion($number)
+    // {
+    //     $number = (int) $number;
+    //     $totalQuestions = count($this->questions);
+
+    //     if ($number < 1 || $number > $totalQuestions) {
+    //         return redirect()->route('pretest.question', ['number' => 1]);
+    //     }
+
+    //     $question = $this->questions[$number - 1];
+    //     $answers = Session::get('answers', []);
+
+    //     return view('student.ui.pretest', [
+    //         'number' => $number,
+    //         'question' => $question,
+    //         'questions' => $this->questions,
+    //         'answers' => $answers,
+    //         'hasPrev' => $number > 1,
+    //         'hasNext' => $number < $totalQuestions,
+    //         'allAnswered' => count($answers) === $totalQuestions,
+    //     ]);
+    // }
+
+    public function showQuestions()
     {
-        $number = (int) $number;
-        $totalQuestions = count($this->questions);
-
-        if ($number < 1 || $number > $totalQuestions) {
-            return redirect()->route('pretest.question', ['number' => 1]);
-        }
-
-        $question = $this->questions[$number - 1];
-        $answers = Session::get('answers', []);
+        $answers = Session::get('answers', []); // Retrieve any saved answers
 
         return view('student.ui.pretest', [
-            'number' => $number,
-            'question' => $question,
             'questions' => $this->questions,
-            'answers' => $answers,
-            'hasPrev' => $number > 1,
-            'hasNext' => $number < $totalQuestions,
-            'allAnswered' => count($answers) === $totalQuestions,
+            'answers' => $answers
         ]);
     }
 
-    public function submitQuestion(Request $request, $number)
-    {
-        $number = (int) $number;
-        $totalQuestions = count($this->questions);
+    // public function submitQuestion(Request $request, $number)
+    // {
+    //     $number = (int) $number;
+    //     $totalQuestions = count($this->questions);
 
-        $answers = Session::get('answers', []);
-        $answers["question_{$number}"] = $request->input('answer');
+    //     $answers = Session::get('answers', []);
+    //     $answers["question_{$number}"] = $request->input('answer');
+    //     Session::put('answers', $answers);
+
+    //     if ($request->input('action') === 'finish' || $number === $totalQuestions) {
+    //         return $this->finishAttempt();
+    //         // redirect()->route('finishAttempt');
+    //     }
+
+    //     return redirect()->route('pretest.question', ['number' => $number + 1]);
+    // }
+
+    public function submitPretest(Request $request)
+    {
+        $answers = $request->input('answers', []);
         Session::put('answers', $answers);
 
-        if ($request->input('action') === 'finish' || $number === $totalQuestions) {
-            return $this->finishAttempt();
-            // redirect()->route('finishAttempt');
-        }
+        // middleware
+        // $user = Auth::user();
+        // $user->pretest_completed = true;
+        // $user->save();
 
-        return redirect()->route('pretest.question', ['number' => $number + 1]);
+        return $this->finishAttempt();
     }
-
 
 
     public function finishAttempt()
@@ -68,7 +91,6 @@ class PretestController extends Controller
         Session::put('total_questions', $totalQuestions);
         Session::put('quiz_completed', true);
 
-        // Redirect to the new route
         return redirect()->route('finish.pretest');
     }
 
@@ -102,29 +124,29 @@ class PretestController extends Controller
         session()->forget('quiz_score');
         session()->forget('total_questions');
 
-        return redirect()->route('pretest.question', ['number' => 1]);
+        return redirect()->route('pretest.questions', ['number' => 1]);
     }
 
     public function reviewPretest()
-{
-    $answers = Session::get('answers', []);
-    $questions = $this->getQuestions();
+    {
+        $answers = Session::get('answers', []);
+        $questions = $this->getQuestions();
 
-    $reviewData = [];
-    foreach ($questions as $index => $question) {
-        $userAnswer = $answers["question_" . ($index + 1)] ?? null;
-        $isCorrect = $userAnswer === $question['correct_answer'];
-        $reviewData[] = [
-            'question' => $question,
-            'user_answer' => $userAnswer,
-            'is_correct' => $isCorrect,
-        ];
+        $reviewData = [];
+        foreach ($questions as $index => $question) {
+            $userAnswer = $answers["question_" . ($index + 1)] ?? null;
+            $isCorrect = $userAnswer === $question['correct_answer'];
+            $reviewData[] = [
+                'question' => $question,
+                'user_answer' => $userAnswer,
+                'is_correct' => $isCorrect,
+            ];
+        }
+
+        return view('student.ui.reviewpretest', [
+            'review_data' => $reviewData,
+        ]);
     }
-
-    return view('student.ui.reviewpretest', [
-        'review_data' => $reviewData,
-    ]);
-}
 
     private function calculateScore($answers)
     {

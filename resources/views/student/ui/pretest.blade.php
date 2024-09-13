@@ -7,6 +7,108 @@
     <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm" style="padding: 1.3rem;">
         <div class="container-fluid">
             <a href="#">
+                <img src="{{ asset('assets/logo-3.svg') }}" alt="Logo" style="width: 150px; height: 30px; margin-left: 0px;">
+            </a>
+        </div>
+    </nav>
+    <div class="container my-5">
+        <div class="row">
+            <div class="col-12">
+                <h2 class="mb-4">Assessment Test</h2>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-9">
+                <form action="{{ route('pretest.submit') }}" method="POST" id="assessmentForm">
+                    @csrf
+                    @foreach ($questions as $index => $question)
+                        <!-- Each question will now have its own card -->
+                        <div class="card shadow-sm mb-4">
+                            <div class="card-body">
+                                <div class="pb-3 mb-3 border-bottom">
+                                    <h6 class="text-muted mb-0">Question {{ $index + 1 }} of {{ count($questions) }}</h6>
+                                </div>
+                                <p class="mb-4">{{ $question['text'] }}</p>
+                                @foreach ($question['options'] as $key => $option)
+                                    <div class="form-check mb-3">
+                                        <input class="form-check-input" type="radio" name="answers[{{ $index }}]" 
+                                            id="option{{ $index }}_{{ $key }}" value="{{ $key }}"
+                                            {{ isset($answers[$index]) && $answers[$index] == $key ? 'checked' : '' }}>
+                                        <label class="form-check-label" for="option{{ $index }}_{{ $key }}">
+                                            {{ $option }}
+                                        </label>
+                                    </div>
+                                @endforeach
+                            </div>
+                        </div>
+                    @endforeach
+                    <div class="d-flex justify-content-end mt-4">
+                        <button type="submit" id="finishAttemptBtn" class="btn btn-primary">
+                            Finish Attempt
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="col-lg-3">
+                <div class="card shadow-sm">
+                    <div class="card-body">
+                        <h6 class="mb-3">Questions</h6>
+                        <div class="d-flex flex-wrap gap-2" id="questionButtons">
+                            @for ($i = 1; $i <= count($questions); $i++)
+                                <button class="btn btn-outline-primary rounded-circle {{ isset($answers[$i - 1]) ? 'answered' : '' }}"
+                                    style="width: 40px; height: 40px; padding: 7px 0; font-size: 16px;">
+                                    {{ $i }}
+                                </button>
+                            @endfor
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+
+        .card {
+            border: none;
+            border-radius: 10px;
+        }
+
+        .btn-outline-primary {
+            border-color: #dee2e6;
+            color: #495057;
+        }
+
+        .btn-outline-primary:hover,
+        .btn-outline-primary.answered {
+            background-color: #28a745;
+            border-color: #28a745;
+            color: white;
+        }
+
+        .form-check-input:checked {
+            background-color: #0d6efd;
+            border-color: #0d6efd;
+        }
+    </style>
+@endsection
+
+
+
+
+
+{{-- @extends('main')
+
+@section('title', 'Assessment Test')
+
+@section('page-content')
+    <div class="background"></div>
+    <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm" style="padding: 1.3rem;">
+        <div class="container-fluid">
+            <a href="#">
                 <img src="{{ asset('assets/logo-3.svg') }}" alt="Logo"
                     style="width: 150px; height: 30px; margin-left: 0px;">
             </a>
@@ -154,4 +256,4 @@
             }
         });
     </script>
-@endsection
+@endsection --}}

@@ -23,13 +23,14 @@ return new class extends Migration
             $table->string('school');
             $table->string('course');
             $table->string('school_year');
+            // $table->boolean('pretest_completed')->default(false);
             $table->timestamps();
         });
         Schema::create('admins', function (Blueprint $table) {
             $table->id('admin_id'); 
             $table->string('firstname');
             $table->string('lastname');
-            $table->string('profile_image');
+            $table->string('profile_image')->nullable();
             $table->dateTime('last_login');
             $table->timestamps();
         });

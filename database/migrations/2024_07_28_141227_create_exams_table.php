@@ -11,16 +11,34 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('tests', function (Blueprint $table) {
+        Schema::create('tests',function (Blueprint $table){
             $table->id('test_id');
-            $table->foreignId('user_id')->references('user_id')->on('users')->cascadeOnDelete();
-            $table->foreignId('course_id')->references('course_id')->on('courses')->cascadeOnDelete();
+            $table->foreignID('student_id')->references('student_id')->on('student')->cascadeOnDelete();
             $table->time('start_time');
             $table->time('end_time');
-            $table->integer('total_items'); 
+            $table->integer('totalItems');
+            $table->integer('totalScore');
+            $table->float('percentage');
+            $table->string('status');
+            $table->timestamps();
+        });
+        Schema::create('test_courses',function(Blueprint $table){
+            $table->id('test_course_id');
+            $table->foreignID('test_id')->references('test_id')->on('tests')->cascadeOnDelete();
+            $table->foreignID('course_id')->references('course_id')->on('courses')->cascadeOnDelete();
+            $table->float('theta_score');
             $table->timestamps();
         });
 
+        Schema::create('test_answers',function (Blueprint $table){
+            $table->id('test_answer_id');
+            $table->foreignID('test_course_id')->references('test_id')->on('tests')->cascadeOnDelete();
+            $table->foreignID('question_id')->references('question_id')->on('test_questions')->cascadeOnDelete();
+            $table->json('participants_answer');
+            $table->integer(column: 'score');
+            $table->timestamps();
+        });
+        
     }
 
     /**

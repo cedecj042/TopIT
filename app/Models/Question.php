@@ -4,11 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Section;
-use App\Models\QuestionType;
-use App\Models\QuestionCategory;
-use App\Models\Option;
+use App\Models\Course;
 use App\Models\Test;
+use App\Models\Difficulty;
+use App\Models\PretestQuestion;
+use App\Models\TestAnswer;
 
 class Question extends Model
 {
@@ -29,5 +29,12 @@ class Question extends Model
     public function difficulty()
     {
         return $this->belongsTo(Difficulty::class, 'difficulty_id', 'difficulty_id');
+    }
+
+    public function pretest_questions(){
+        return $this->hasMany(PretestQuestion::class,'question_id','question_id');
+    }
+    public function test_answers(){
+        return $this->hasMany(TestAnswer::class,'question_id','question_id');
     }
 }

@@ -17,9 +17,6 @@ class Course extends Model
         'title',
         'description'
     ];
-    public function students(){
-        return $this->belongsToMany(Student::class,'student_course_thetas','course_id','student_id');
-    }
 
     public function tests(){
         return $this->belongsTo(Test::class,'course_id');
@@ -34,5 +31,11 @@ class Course extends Model
 
     public function questions(){
         return $this->hasMany(Question::class,'course_id','course_id');
+    }
+    public function pretest_courses(){
+        return $this->hasMany(PretestCourse::class,'course_id','course_id');
+    }
+    public function test_courses(){
+        return $this->hasMany(TestCourse::class,'course_id','course_id');
     }
 }

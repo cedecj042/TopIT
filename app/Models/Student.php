@@ -5,6 +5,9 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\User;
+use App\Models\Pretest;
+use App\Models\Test;
+
 
 class Student extends Model
 {
@@ -26,5 +29,11 @@ class Student extends Model
 
     public function user(){
         return $this->morphOne(User::class,'userable');
+    }
+    public function pretests(){
+        return $this->hasOne(Pretest::class,'student_id','student_id');
+    }
+    public function tests(){
+        return $this->hasOne(Test::class,'student_id','student_id');
     }
 }

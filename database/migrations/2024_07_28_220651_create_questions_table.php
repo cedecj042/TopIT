@@ -49,15 +49,6 @@ return new class extends Migration
             $table->timestamps();
         });
 
-
-        Schema::create('pretests',function (Blueprint $table){
-            $table->id('pretest_id');
-            $table->foreignID('question_id')->references('question_id')->on('questions')->cascadeOnDelete();
-            $table->integer('score');
-            $table->timestamps();
-        });
-
-
     }
 
     /**
@@ -65,7 +56,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('pretest');
         Schema::dropIfExists('questions');
         Schema::dropIfExists('difficulty');
         Schema::dropIfExists('identifications');

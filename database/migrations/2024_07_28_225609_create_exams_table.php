@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('tests',function (Blueprint $table){
             $table->id('test_id');
-            $table->foreignID('student_id')->references('student_id')->on('student')->cascadeOnDelete();
+            $table->foreignID('student_id')->references('student_id')->on('students')->cascadeOnDelete();
             $table->time('start_time');
             $table->time('end_time');
             $table->integer('totalItems');
@@ -33,7 +33,7 @@ return new class extends Migration
         Schema::create('test_answers',function (Blueprint $table){
             $table->id('test_answer_id');
             $table->foreignID('test_course_id')->references('test_id')->on('tests')->cascadeOnDelete();
-            $table->foreignID('question_id')->references('question_id')->on('test_questions')->cascadeOnDelete();
+            $table->foreignID('question_id')->references('question_id')->on('questions')->cascadeOnDelete();
             $table->json('participants_answer');
             $table->integer(column: 'score');
             $table->timestamps();

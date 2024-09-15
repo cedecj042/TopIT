@@ -109,4 +109,12 @@ class QuestionController extends Controller
         return redirect()->route('admin.questions.index')->with('message', 'Question updated successfully.');
     }
 
+    public function showPretestQuestions(){
+        return view('admin.ui.questions.pretest.index');
+    }
+    public function addPretestQuestions(){
+        $questions = Question::with('courses')->get();
+        return view('admin.ui.questions.pretest.add',compact('questions'));
+    }
+
 }

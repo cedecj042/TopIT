@@ -43,7 +43,7 @@ class Reports extends DataTableComponent
                 ->sortable(),
             Column::make('Details')
                 ->label(
-                    fn($row) => '<a href="' . route('admin-studentprofile', $row->student_id) . '" class="btn btn-primary btn-sm">View Profile</a>'
+                    fn($row) => '<a href="' . route('admin.studentprofile', $row->student_id) . '" class="btn btn-primary btn-sm">View Profile</a>'
                     )
                 ->html(),
         ];

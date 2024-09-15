@@ -39,12 +39,11 @@
                 </a>
                 <ul class="collapse nav flex-column ms-0" id="questionBankSubmenu" data-bs-parent="#menu">
                     <li class="w-100">
-                        <a href="{{ route('admin.questions.generate') }}" class="nav-link text-white py-3 ps-5">Generate
+                        <a href="{{ route('admin.questions.index') }}" class="nav-link text-white py-3 ps-5">List of
                             Questions</a>
                     </li>
                     <li class="w-100">
-                        <a href="{{ route('admin.questions.index') }}" class="nav-link text-white py-3 ps-5">List of
-                            Questions</a>
+                        <a href="{{ route('admin.questions.pretest.index') }}" class="nav-link text-white py-3 ps-5">Pretest Questions</a>
                     </li>
                 </ul>
             </li>

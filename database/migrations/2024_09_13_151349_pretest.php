@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('pretests',function (Blueprint $table){
             $table->id('pretest_id');
-            $table->foreignID('student_id')->references('student_id')->on('student')->cascadeOnDelete();
+            $table->foreignID('student_id')->references('student_id')->on('students')->cascadeOnDelete();
             $table->integer('totalItems');
             $table->integer('totalScore');
             $table->float('percentage');

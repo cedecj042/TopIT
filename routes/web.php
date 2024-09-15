@@ -103,10 +103,12 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/', [QuestionController::class, 'showQuestions'])->name('index');
         Route::get('/generate', [QuestionController::class, 'viewGenerateQuestions'])->name('generate');
         Route::post('/send', [QuestionController::class, 'generateQuestions'])->name('send');
-        Route::post('/update/{id}', [QuestionController::class, 'updateQuestion'])->name('update');
-        // Route::get('/admin-question-bank', [AdminController::class, 'showQuestionBank'])->name('admin-question-bank');
+        Route::get('/pretest', [QuestionController::class, 'showPretestQuestions'])->name('pretest.index');
+        Route::get('/pretest/add', [QuestionController::class, 'addPretestQuestions'])->name('pretest.add');
+        Route::get('/pretest/delete/{id}', [QuestionController::class, 'deletePretestQuestions'])->name('pretest.delete');
         // Route::get('/bank/list', [QuestionController::class, 'showQuestionBank'])->name('admin-question-bank-list');
         // Route::get('/manage', [QuestionController::class, 'showQuestionManage'])->name('manage');
+        Route::post('/update/{id}', [QuestionController::class, 'updateQuestion'])->name('update');
         Route::get('/edit/{id}', [QuestionController::class, 'editQuestion'])->name('edit');
 
     });

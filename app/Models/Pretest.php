@@ -26,6 +26,6 @@ class Pretest extends Model
         return $this->belongsTo(Student::class,'student_id','student_id');
     }
     public function pretest_courses(){
-        return $this->hasMany(PretestCourse::class,'pretest_course_id','pretest_course_id');
+        return $this->hasMany(PretestCourse::class,'pretest_id','pretest_id');
     }
 }

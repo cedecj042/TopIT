@@ -21,10 +21,10 @@
             <div class="col-md-6 offset-md-1">
                 <div class="pe-md-5">
                     <h2 class="mb-4">Assessment Completed!</h2>
-                    <p class="fs-5">You got a score of <strong>{{ session('quiz_score') }}/{{ session('total_questions') }}</strong>.
+                    <p class="fs-5">You got a score of <strong>{{ $score }}/{{ $totalQuestions }}</strong>.
                         Thank you for taking our assessment test. <br>You may now proceed to TopIT. Happy reviewing!</p>
                     <a href="{{ route('dashboard') }}" class="btn btn-primary w-50 p-2 mt-4">Proceed to Dashboard</a>
-                    <a href="{{ route('pretest.review') }}"
+                    <a href="{{ route('pretest.review', ['pretestId' => $pretestId]) }}"
                         class="btn btn-outline-primary w-50 p-2 mt-2 hover:bg-transparent hover:text-primary">Review your
                         answers</a>
                 </div>

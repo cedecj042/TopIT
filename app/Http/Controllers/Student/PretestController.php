@@ -9,7 +9,11 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use App\Models\Course;
 use App\Models\Question;
-use App\Models\PretestAttempt;
+use App\Models\Pretest;
+use App\Models\PretestCourse;
+use App\Models\PretestQuestion;
+use App\Models\PretestAnswer;
+use Illuminate\Support\Facades\DB;
 
 
 class PretestController extends Controller
@@ -23,7 +27,7 @@ class PretestController extends Controller
 
     private function getQuestions()
     {
-        return Question::all(); 
+        return Question::all();
     }
 
 
@@ -104,92 +108,170 @@ class PretestController extends Controller
     public function finishAttempt()
     {
         $answers = Session::get('pretest_answers', []);
-        $score = $this->calculateScore($answers);
-        $totalQuestions = Question::whereIn('course_id', Session::get('pretest_progress.courses'))->count();
-
+        $progress = Session::get('pretest_progress');
         $studentId = Auth::id();
-        if ($studentId) {
-            PretestAttempt::create([
-                'student_id' => $studentId,
-                'answers' => json_encode($answers),
-                'score' => $score,
-            ]);
-        } else {
+
+        if (!$studentId) {
             Log::warning('Attempt to store pretest attempt without an authenticated user.');
+            return redirect()->route('login');
         }
 
-        Session::put('quiz_score', $score);
-        Session::put('total_questions', $totalQuestions);
+        $pretestId = DB::transaction(function () use ($answers, $progress, $studentId) {
+            $pretest = Pretest::create([
+                'student_id' => $studentId,
+                'totalItems' => count($answers),
+                'totalScore' => 0,
+                'percentage' => 0,
+                'status' => 'Completed'
+            ]);
+
+            $totalScore = 0;
+
+            foreach ($progress['courses'] as $courseId) {
+                $pretestCourse = PretestCourse::create([
+                    'course_id' => $courseId,
+                    'pretest_id' => $pretest->pretest_id,
+                    'theta_score' => 0
+                ]);
+
+                Log::info('PretestCourse created with ID: ' . $pretestCourse->pretest_course_id);
+
+                $questions = Question::where('course_id', $courseId)->get();
+
+                foreach ($questions as $question) {
+                    $pretestQuestion = PretestQuestion::create([
+                        'question_id' => $question->question_id,
+                    ]);
+
+                    $userAnswer = $answers[$question->question_id] ?? null;
+
+                    $questionModel = $question->questionable_type::find($question->questionable_id);
+                    $correctAnswer = $questionModel->answer ?? null;
+
+                    $score = $this->calculateScore($userAnswer, $correctAnswer, $questionModel);
+                    $totalScore += $score;
+
+                    PretestAnswer::create([
+                        'pretest_course_id' => $pretestCourse->pretest_course_id,
+                        'pretest_question_id' => $pretestQuestion->pretest_question_id,
+                        'participants_answer' => json_encode($userAnswer),
+                        'score' => $score
+                    ]);
+                }
+            }
+
+            $pretest->update([
+                'totalScore' => $totalScore,
+                'percentage' => ($totalScore / $pretest->totalItems) * 100
+            ]);
+
+            return $pretest->pretest_id;
+        });
+
+        Session::forget('pretest_answers');
+        Session::forget('pretest_progress');
         Session::put('quiz_completed', true);
 
-        return redirect()->route('pretest.finish');
+        return redirect()->route('pretest.finish', ['pretestId' => $pretestId]);
     }
 
-    public function showFinishAttempt()
+
+    public function showFinishAttempt($pretestId)
     {
-        $score = Session::get('quiz_score', 0);
-        $totalQuestions = Session::get('total_questions', 0);
+        $studentId = Auth::id();
+
+        $pretest = Pretest::findOrFail($pretestId);
+        $totalScore = $pretest->totalScore ?? 0;
+        $totalQuestions = $pretest->totalItems ?? 0;
 
         return view('student.ui.finishAttempt', [
-            'score' => $score,
-            'totalQuestions' => $totalQuestions
+            'score' => $totalScore,
+            'totalQuestions' => $totalQuestions,
+            'pretestId' => $pretestId
         ]);
     }
 
-    public function reviewPretest()
+    // private function calculateScore($answers)
+    // {
+    //     $score = 0;
+
+    //     foreach ($this->questions as $question) {
+    //         $questionModel = $question->questionable_type::find($question->questionable_id);
+
+    //         $correctAnswer = $questionModel->answer ?? null;
+
+    //         $userAnswer = $answers[$question->question_id] ?? null;
+
+    //         if ($userAnswer === $correctAnswer) {
+    //             $score++;
+    //         }
+    //     }
+
+    //     return $score;
+    // }
+    private function calculateScore($userAnswer, $correctAnswer, $questionModel)
     {
-        $answers = Session::get('answers', []); 
-        $courses = Course::all(); 
+        if (is_array($correctAnswer)) {
+            $userAnswer = is_array($userAnswer) ? $userAnswer : [$userAnswer];
+            
+            sort($userAnswer);
+            sort($correctAnswer);
 
-        $reviewData = [];
-
-        if ($courses->isEmpty()) {
-            Log::warning('No courses found for review pretest.');
+            return (json_encode($userAnswer) === json_encode($correctAnswer)) ? 1 : 0;
+        } else {
+            return ($userAnswer === $correctAnswer) ? 1 : 0;
         }
+    }
+    public function reviewPretest($pretestId)
+    {
+        $studentId = Auth::id();
+        $pretest = Pretest::findOrFail($pretestId);
+        $pretestCourses = $pretest->pretest_courses()->with('courses')->get();
 
-        foreach ($courses as $course) {
-            $questions = Question::where('course_id', $course->course_id)
+        $questions = [];
+        $answers = [];
+
+        foreach ($pretestCourses as $pretestCourse) {
+            $courseId = $pretestCourse->course_id;
+
+            $courseQuestions = Question::where('course_id', $courseId)
                 ->with(['questionable', 'difficulty'])
                 ->get();
 
-            if ($questions->isEmpty()) {
-                Log::warning('No questions found for course ID: ' . $course->course_id);
-            }
+            $questions[$courseId] = $courseQuestions;
 
-            foreach ($questions as $index => $question) {
-                $questionId = "question_" . ($index + 1);
-                $userAnswer = $answers[$questionId] ?? null;
-                $isCorrect = $userAnswer === $question->correct_answer;
-                $reviewData[] = [
-                    'question' => [
-                        'text' => $question->text,
-                        'options' => json_decode($question->options, true),
-                        'correct_answer' => $question->correct_answer,
-                    ],
-                    'user_answer' => $userAnswer,
-                    'is_correct' => $isCorrect,
-                ];
+            $pretestQuestions = PretestQuestion::whereIn('question_id', $courseQuestions->pluck('question_id'))
+                ->whereHas('questions', function ($query) use ($courseId) {
+                    $query->where('course_id', $courseId);
+                })
+                ->get();
+
+            foreach ($pretestQuestions as $pretestQuestion) {
+                $pretestAnswer = PretestAnswer::where('pretest_question_id', $pretestQuestion->pretest_question_id)
+                    ->where('pretest_course_id', $pretestCourse->pretest_course_id)
+                    ->first();
+
+                if ($pretestAnswer) {
+                    $participantsAnswer = json_decode($pretestAnswer->participants_answer, true);
+                    $answers[$pretestQuestion->question_id] = [
+                        'participants_answer' => $participantsAnswer,
+                        'score' => $pretestAnswer->score
+                    ];
+                }
             }
         }
 
-        return view('student.ui.reviewpretest', [
-            'review_data' => $reviewData,
-            'courses' => $courses,
+        return view('student.ui.reviewPretest', [
+            'pretest' => $pretest,
+            'courses' => $pretestCourses->pluck('courses')->all(),
+            'questions' => $questions,
+            'answers' => $answers,
+            'totalScore' => $pretest->totalScore,
+            'totalQuestions' => $pretest->totalItems,
         ]);
     }
 
-    private function calculateScore($answers)
-    {
-        $score = 0;
-        foreach ($this->questions as $index => $question) {
-            $questionNumber = $index + 1;
-            if (
-                isset($answers["question_{$questionNumber}"]) &&
-                $answers["question_{$questionNumber}"] === $question['correct_answer']
-            ) {
-                $score++;
-            }
-        }
-        return $score;
-    }
+
+
+
 }

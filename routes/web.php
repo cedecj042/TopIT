@@ -46,8 +46,8 @@ Route::middleware('student')->group(function () {
         Route::get('/start', [PretestController::class, 'startPretest'])->name('pretest.start');
         Route::get('/questions/{courseIndex?}', [PretestController::class, 'showQuestions'])->name('pretest.questions');
         Route::post('/submit', [PretestController::class, 'submitAnswers'])->name('pretest.submit');
-        Route::get('/finish', [PretestController::class, 'showFinishAttempt'])->name('pretest.finish');
-        Route::get('/review', [PretestController::class, 'reviewPretest'])->name('pretest.review');
+        Route::get('/finish/{pretestId}', action: [PretestController::class, 'showFinishAttempt'])->name('pretest.finish');
+        Route::get('/review/{pretestId}', [PretestController::class, 'reviewPretest'])->name('pretest.review');
     });
 
 });

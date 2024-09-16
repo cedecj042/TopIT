@@ -26,6 +26,9 @@ class PretestAnswer extends Model
     public function pretest_courses(){
         return $this->belongsTo(PretestCourse::class,'pretest_course_id','pretest_course_id');
     }
+    // public function pretest_questions(){
+    //     return $this->belongsTo(PretestQuestion::class,'pretest_answer_id','pretest_answer_id');
+    // }
     public function pretest_questions(){
         return $this->hasMany(PretestQuestion::class,'pretest_answer_id','pretest_answer_id');
     }

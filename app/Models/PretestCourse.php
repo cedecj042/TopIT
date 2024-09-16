@@ -27,4 +27,5 @@ class PretestCourse extends Model
     public function pretests(){
         return $this->belongsTo(Pretest::class,'pretest_id','pretest_id');
     }
+
 }

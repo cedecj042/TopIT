@@ -27,7 +27,7 @@ return new class extends Migration
         Schema::create('multichoice_many',function (Blueprint $table){
             $table->id('multichoice_many_id');
             $table->string('name');
-            $table->json('answers');
+            $table->json('answer');
             $table->json('choices');
             $table->timestamps();
         });

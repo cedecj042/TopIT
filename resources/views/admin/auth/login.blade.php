@@ -26,6 +26,10 @@
                             style="--bs-btn-font-size: .9rem;">Login</button>
                     </form>
                 </div>
+
+                <div class="mt-5 text-center">
+                    <a href="{{ route(name: 'login') }}" class="text-dark auth_btn">Login as a Student</a>
+                </div>
             </div>
         </div>
     </div>

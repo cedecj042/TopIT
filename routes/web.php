@@ -14,6 +14,7 @@ use App\Http\Controllers\Admin\PdfController;
 use App\Http\Controllers\Admin\QuestionsController;
 use App\Http\Controllers\Student\StudentController;
 use App\Http\Controllers\Student\PretestController;
+use App\Livewire\PretestAdd;
 use Illuminate\Support\Facades\Route;
 
 
@@ -104,7 +105,8 @@ Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(fun
         Route::get('/generate', [QuestionController::class, 'viewGenerateQuestions'])->name('generate');
         Route::post('/send', [QuestionController::class, 'generateQuestions'])->name('send');
         Route::get('/pretest', [QuestionController::class, 'showPretestQuestions'])->name('pretest.index');
-        Route::get('/pretest/add', [QuestionController::class, 'addPretestQuestions'])->name('pretest.add');
+        Route::get('/pretest/add', PretestAdd::class)->name('pretest.add');
+        Route::post('/pretest/store', [QuestionController::class, 'storePretest'])->name('pretest.store');
         Route::get('/pretest/delete/{id}', [QuestionController::class, 'deletePretestQuestions'])->name('pretest.delete');
         // Route::get('/bank/list', [QuestionController::class, 'showQuestionBank'])->name('admin-question-bank-list');
         // Route::get('/manage', [QuestionController::class, 'showQuestionManage'])->name('manage');

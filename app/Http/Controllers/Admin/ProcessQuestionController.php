@@ -34,17 +34,37 @@ class ProcessQuestionController extends Controller
                         ]);
                         break;
                     case 'Multiple Choice - Single Answer':
+
+                        $choices = [];
+                        foreach ($qData['choices'] as $choice) {
+                            foreach ($choice as $key => $value) {
+                                $choices[] = $value;
+                            }
+                        }
+
                         $model = MultiChoiceSingle::create([
                             'name' => $qData['questionType'],
                             'answer' => $qData['correctAnswer'],
-                            'choices' => json_encode($qData['choices'])
+                            'choices' =>$choices
                         ]);
                         break;
                     case 'Multiple Choice - Multiple Answer':
+                        $choices = [];
+                        $answers = [];
+                        foreach ($qData['choices'] as $choice) {
+                            foreach ($choice as $key => $value) {
+                                $choices[] = $value;
+                            }
+                        }
+                        foreach ($qData['correctAnswer'] as $answer) {
+                            foreach ($answer as $key => $value) {
+                                $answers[] = $value;
+                            }
+                        }
                         $model = MultiChoiceMany::create([
                             'name' => $qData['questionType'],
-                            'answers' => json_encode($qData['correctAnswer']),
-                            'choices' => json_encode($qData['choices'])
+                            'answer' => $answers,
+                            'choices' => $choices
                         ]);
                         break;
                     default:
@@ -68,7 +88,7 @@ class ProcessQuestionController extends Controller
                 ]);
 
                 // Link the question to the appropriate model (Identification, Multiple Choice, etc.)
-                $model->question()->save($question);
+                $model->questions()->save($question);
             }
         }
 

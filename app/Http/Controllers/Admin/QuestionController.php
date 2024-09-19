@@ -7,6 +7,7 @@ use App\Jobs\GenerateQuestionJob;
 use App\Jobs\ProcessCourse;
 use App\Models\Course;
 use App\Models\Difficulty;
+use App\Models\PretestQuestion;
 use App\Models\Question;
 use Dotenv\Exception\ValidationException;
 use GenerateQuestionsJob;
@@ -110,11 +111,33 @@ class QuestionController extends Controller
     }
 
     public function showPretestQuestions(){
-        return view('admin.ui.questions.pretest.index');
+        $questions = PretestQuestion::with(['questions.difficulty','questions.courses','questions.questionable']);
+        return view('admin.ui.questions.pretest.index',compact('questions'));
     }
     public function addPretestQuestions(){
-        $questions = Question::with('courses')->get();
-        return view('admin.ui.questions.pretest.add',compact('questions'));
+        // $questions = Question::with('courses')->get();
+        return view('admin.ui.questions.pretest.add');
+    }
+    
+    public function storePretest(Request $request)
+    {
+        // Retrieve selected questions from the request
+        $selectedQuestions = $request->input('selected_questions', []);
+
+        // Check if any questions were selected
+        if (empty($selectedQuestions)) {
+            return redirect()->back()->with('message', 'No questions selected.');
+        }
+
+        // Save each selected question to the `pretest_questions` table
+        foreach ($selectedQuestions as $questionId) {
+            PretestQuestion::create([
+                'question_id' => $questionId,
+            ]);
+        }
+
+        // Return back with success message
+        return redirect()->back()->with('message', 'Pretest questions saved successfully.');
     }
 
 }

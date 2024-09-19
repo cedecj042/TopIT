@@ -2,56 +2,71 @@
 
 namespace App\Livewire;
 
+use App\Models\Course;
+use App\Models\Difficulty;
 use App\Models\Question;
-use Illuminate\Database\Eloquent\Builder;
-use Rappasoft\LaravelLivewireTables\DataTableComponent;
-use Rappasoft\LaravelLivewireTables\Views\Column;
+use Illuminate\Support\Collection;
+use Livewire\Component;
+use App\Models\PretestQuestion;
 
-class PretestAdd extends DataTableComponent
+class PretestAdd extends Component
 {
-    public $selectedQuestions = []; // To store selected question IDs
+    public Collection $questions;
+    public Collection $courses;
+    public Collection $difficulties;
+    public Collection $selectedQuestions;
+    
 
-    protected $model = Question::class;
-
-    public function configure(): void
+    public function mount()
     {
-        $this->setPrimaryKey('question_id');
-        $this->setPerPageAccepted([10, 25, 50]);
+        // Load all courses
+        $this->courses = Course::all();
+        
+        // Load all questions with related difficulty and questionable (polymorphic relations)
+        $this->questions = Question::with(['difficulty', 'questionable','courses'])->get();
+        $this->difficulties = Difficulty::all();
+        // Initialize an empty collection for selected questions
+        $this->selectedQuestions = collect();
     }
 
-    public function builder(): Builder
+    public function render()
     {
-        return Question::query()->with(['courses', 'difficulty']);
+        return view('admin.ui.questions.pretest.add', [
+            'courses' => $this->courses,
+            'questions' => $this->questions
+        ]);
     }
 
-    public function columns(): array
+    public function getSelectedQuestions()
     {
-        return [
-            Column::make('Select')
-                ->label(function ($row) {
-                    // Use a Blade partial for rendering checkboxes
-                    return view('admin.ui.questions.pretest.actions', ['row' => $row]);
-                })
-                ->html(),
-
-            Column::make('Question', 'question')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Course', 'courses.title')
-                ->sortable()
-                ->searchable(),
-
-            Column::make('Difficulty', 'difficulty.name')
-                ->sortable()
-                ->searchable(),
-        ];
+        // Filter and return the keys of selected questions
+        return $this->selectedQuestions->filter(fn($p) => $p)->keys();
     }
 
-    // Optional: Handle selected questions (like saving, processing, etc.)
-    public function saveSelectedQuestions()
+    public function toggleSelection($questionId)
     {
-        // Handle selected question IDs in $this->selectedQuestions
-        // You can process or save the selected questions here
+        // Toggle question selection for selectedQuestions collection
+        if ($this->selectedQuestions->contains($questionId)) {
+            $this->selectedQuestions->forget($this->selectedQuestions->search($questionId));
+        } else {
+            $this->selectedQuestions->push($questionId);
+        }
     }
+
+    public function save()
+{
+    var_dump($this->selectedQuestions);
+    // Save the selected questions to the `pretest_questions` table
+    foreach ($this->selectedQuestions as $questionId) {
+        PretestQuestion::create([
+            'question_id' => $questionId,
+        ]);
+    }
+
+    // Clear the selected questions after saving
+    $this->selectedQuestions = collect();
+
+    // Add success feedback
+    session()->flash('message', 'Pretest questions saved successfully.');
+}
 }

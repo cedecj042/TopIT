@@ -15,7 +15,7 @@ class Identification extends Model
         'answer',
     ];
 
-    public function question()
+    public function questions()
     {
         return $this->morphOne(Question::class, 'questionable');
     }

@@ -10,7 +10,7 @@
                 <div class="row p-3 mb-5">
                     <div class="d-flex justify-content-between flex-column flex-wrap flex-md-nowrap align-items-start p-5 mb-3">
                         <div class="btn-toolbar mb-2 mb-md-0 ">
-                            <a href="{{ route('admin-dashboard') }}" class="bi bi-arrow-left p-2 text-muted text-dark auth_btn"> Back to Dashboard</a>
+                            <a href="{{ route('admin.dashboard') }}" class="bi bi-arrow-left p-2 text-muted text-dark auth_btn"> Back to Dashboard</a>
                         </div>
                         <h3 class="fw-bold">Profile</h3>
                         <div class="d-flex flex-row align-items-start p-4 gap-4 w-100">

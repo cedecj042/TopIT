@@ -15,8 +15,11 @@ class MultiChoiceSingle extends Model
         'answer', 
         'choices',
     ];
+    protected $casts = [
+        'choices' => 'array', // Cast to array for easy handling
+    ];
 
-    public function question()
+    public function questions()
     {
         return $this->morphOne(Question::class, 'questionable');
     }

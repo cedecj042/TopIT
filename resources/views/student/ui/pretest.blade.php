@@ -46,36 +46,36 @@
                                 <div class="pb-3 mb-3 border-bottom">
                                     <h6 class="text-muted mb-0">Question {{ $index + 1 }} of {{ count($questions) }}</h6>
                                 </div>
-                                <p class="mb-4">{{ $question->question }}</p>
-                                @if ($question->questionable_type === 'App\Models\MultiChoiceSingle')
-                                    @foreach (json_decode($question->questionable->choices) as $key => $option)
+                                <p class="mb-4">{{ $question->questions->question }}</p>
+                                @if ($question->questions->questionable_type === 'App\Models\MultiChoiceSingle')
+                                    @foreach ($question->questions->questionable->choices as $key => $option)
                                         <div class="form-check mb-3">
-                                            <input class="form-check-input" type="radio" name="answers[{{ $question->question_id }}]" 
-                                                id="question{{ $question->question_id }}_option{{ $key }}" value="{{ $option }}"
-                                                {{ isset($answers[$question->question_id]) && $answers[$question->question_id] == $option ? 'checked' : '' }}
+                                            <input class="form-check-input" type="radio" name="answers[{{ $question->questions->question_id }}]" 
+                                                id="question{{ $question->questions->question_id }}_option{{ $key }}" value="{{ $option }}"
+                                                {{ isset($answers[$question->questions->question_id]) && $answers[$question->questions->question_id] == $option ? 'checked' : '' }}
                                                 title="Option: {{ $option }}">
-                                            <label class="form-check-label" for="question{{ $question->question_id }}_option{{ $key }}">
+                                            <label class="form-check-label" for="question{{ $question->questions->question_id }}_option{{ $key }}">
                                                 {{ $option }}
                                             </label>
                                         </div>
                                     @endforeach
-                                @elseif ($question->questionable_type === 'App\Models\MultiChoiceMany')
-                                    @foreach (json_decode($question->questionable->choices) as $key => $option)
+                                @elseif ($question->questions->questionable_type === 'App\Models\MultiChoiceMany')
+                                    @foreach ($question->questions->questionable->choices as $key => $option)
                                         <div class="form-check mb-3">
-                                            <input class="form-check-input" type="checkbox" name="answers[{{ $question->question_id }}][]" 
-                                                id="question{{ $question->question_id }}_option{{ $key }}" value="{{ $option }}"
-                                                {{ isset($answers[$question->question_id]) && in_array($option, $answers[$question->question_id]) ? 'checked' : '' }}
+                                            <input class="form-check-input" type="checkbox" name="answers[{{ $question->questions->question_id }}][]" 
+                                                id="question{{ $question->questions->question_id }}_option{{ $key }}" value="{{ $option }}"
+                                                {{ isset($answers[$question->questions->question_id]) && in_array($option, $answers[$question->questions->question_id]) ? 'checked' : '' }}
                                                 title="Option: {{ $option }}">
-                                            <label class="form-check-label" for="question{{ $question->question_id }}_option{{ $key }}">
+                                            <label class="form-check-label" for="question{{ $question->questions->question_id }}_option{{ $key }}">
                                                 {{ $option }}
                                             </label>
                                         </div>
                                     @endforeach
-                                @elseif ($question->questionable_type === 'App\Models\Identification')
+                                @elseif ($question->questions->questionable_type === 'App\Models\Identification')
                                     <div class="form-group">
-                                        <input type="text" class="form-control" name="answers[{{ $question->question_id }}]" 
-                                            value="{{ $answers[$question->question_id] ?? '' }}" placeholder="Enter your answer here"
-                                            title="Your answer for {{ $question->question }}">
+                                        <input type="text" class="form-control" name="answers[{{ $question->questions->question_id }}]" 
+                                            value="{{ $answers[$question->questions->question_id] ?? '' }}" placeholder="Enter your answer here"
+                                            title="Your answer for {{ $question->questions->question }}">
                                     </div>
                                 @endif
                             </div>

@@ -18,7 +18,7 @@
             </div>
             <div class="col d-flex align-items-center form-bg">
                 <div class="w-100 px-5 mx-4">
-                    <form method="POST" action="{{ route('student.login') }}">
+                    <form method="POST" action="{{ route('student.login') }}" class="mt-5">
                         @csrf
                         <h3 class="fw-bold">Login</h3>
                         <div class="mb-3">
@@ -44,6 +44,10 @@
                     </div>
                     <div class="mt-5 text-center">
                         <a href="{{ route('register') }}" class="text-dark auth_btn">Register Now</a>
+                    </div>
+                    <br>
+                    <div class="mt-5 text-center">
+                        <a href="{{ route(name: 'admin.login') }}" class="text-dark auth_btn">Admin Login</a>
                     </div>
                 </div>
             </div>

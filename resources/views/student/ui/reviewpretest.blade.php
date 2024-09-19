@@ -60,10 +60,10 @@
                                         <i
                                             class="bi {{ $isCorrect ? 'bi-check-circle text-success' : 'bi-x-circle text-danger' }} fs-4"></i>
                                     </div>
-                                    <p class="mb-4">{{ $question->question }}</p>
+                                    <p class="mb-4">{{ $question->questions->question }}</p>
 
-                                    @if ($question->questionable_type === 'App\Models\MultiChoiceSingle')
-                                        @foreach (json_decode($question->questionable->choices) as $option)
+                                    @if ($question->questions->questionable_type === 'App\Models\MultiChoiceSingle')
+                                        @foreach ($question->questions->questionable->choices as $option)
                                             <div class="form-check mb-3">
                                                 <input class="form-check-input" type="radio" disabled
                                                     {{ $answerData && $answerData['participants_answer'] == $option ? 'checked' : '' }}>
@@ -75,12 +75,12 @@
                                         {{-- <p><strong>Your Answer:</strong>
                                             {{ $answerData ? $answerData['participants_answer'] : 'No answer provided' }}
                                         </p> --}}
-                                        <p><strong>Correct Answer:</strong> {{ $question->questionable->answer }}</p>
+                                        <p><strong>Correct Answer:</strong> {{ $question->questions->questionable->answer }}</p>
                                         {{-- <p><strong>Result:</strong> <span
                                                 class="{{ $isCorrect ? 'text-success' : 'text-danger' }}">{{ $isCorrect ? 'Correct' : 'Incorrect' }}</span>
                                         </p> --}}
-                                    @elseif ($question->questionable_type === 'App\Models\MultiChoiceMany')
-                                        @foreach (json_decode($question->questionable->choices) as $option)
+                                    @elseif ($question->questions->questionable_type === 'App\Models\MultiChoiceMany')
+                                        @foreach ($question->questions->questionable->choices as $option)
                                             <div class="form-check mb-3">
                                                 <input class="form-check-input" type="checkbox" disabled
                                                     {{ $answerData && in_array($option, $answerData['participants_answer']) ? 'checked' : '' }}>
@@ -89,20 +89,19 @@
                                                 </label>
                                             </div>
                                         @endforeach
-                                        {{-- <p><strong>Your Answer:</strong>
+                                        <!-- <p><strong>Your Answer:</strong>
                                             {{ $answerData ? implode(', ', $answerData['participants_answer']) : 'No answer provided' }}
-                                        </p> --}}
+                                        </p> -->
                                         @php
-                                            $userAnswers = is_array($answerData['participants_answer'])
-                                                ? $answerData['participants_answer']
-                                                : [$answerData['participants_answer']];
-                                            $correctAnswers = json_decode($question->questionable->answer);
+                                            //$userAnswers = is_array($answerData['participants_answer']) ? $answerData['participants_answer']: [$answerData['participants_answer']];
+                                            $correctAnswers = $question->questions->questionable->answer;
                                         @endphp
                                         <p><strong>Correct Answer:</strong> {{ implode(', ', $correctAnswers) }}</p>
+                                        
                                         {{-- <p><strong>Result:</strong> <span
                                                 class="{{ $isCorrect ? 'text-success' : 'text-danger' }}">{{ $isCorrect ? 'Correct' : 'Incorrect' }}</span>
                                         </p> --}}
-                                    @elseif ($question->questionable_type === 'App\Models\Identification')
+                                    @elseif ($question->questions->questionable_type === 'App\Models\Identification')
                                         <div class="form-group">
                                             <input type="text" class="form-control"
                                                 value="{{ $answerData ? $answerData['participants_answer'] : '' }}"
@@ -112,7 +111,7 @@
                                             {{ $answerData ? $answerData['participants_answer'] : 'No answer provided' }}
                                         </p> --}}
                                         <p class="mt-3"><strong>Correct Answer:</strong>
-                                            {{ $question->questionable->answer }}</p>
+                                            {{ $question->questions->questionable->answer }}</p>
                                         {{-- <p><strong>Result:</strong> <span
                                                 class="{{ $isCorrect ? 'text-success' : 'text-danger' }}">{{ $isCorrect ? 'Correct' : 'Incorrect' }}</span>
                                         </p> --}}

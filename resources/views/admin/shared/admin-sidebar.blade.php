@@ -43,7 +43,8 @@
                             Questions</a>
                     </li>
                     <li class="w-100">
-                        <a href="{{ route('admin.questions.pretest.index') }}" class="nav-link text-white py-3 ps-5">Pretest Questions</a>
+                        <a href="{{ route('admin.questions.pretest.index') }}"
+                            class="nav-link text-white py-3 ps-5">Pretest Questions</a>
                     </li>
                 </ul>
             </li>
@@ -81,7 +82,9 @@
         </a>
         <ul class="dropdown-menu dropdown-menu text-small shadow">
             <li><a class="dropdown-item fs-6" href="{{ route('admin.profile') }}">Profile</a></li>
-            <li><a class="dropdown-item fs-6" href="{{ route('logout') }}">Sign out</a></li>
+            <li><a class="dropdown-item fs-6" href="{{ route('logout') }}" onclick="clearMenuState();">
+                    Sign out
+                </a></li>
         </ul>
     </div>
 </div>
@@ -122,6 +125,7 @@
             localStorage.setItem('activeLink', href);
         }
 
+
         function restoreMenuState() {
             const openCollapses = JSON.parse(localStorage.getItem('openSubmenus')) || [];
             openCollapses.forEach(id => {
@@ -133,10 +137,12 @@
                 }
             });
 
-            const activeLink = localStorage.getItem('activeLink');
-            if (activeLink) {
-                updateNavLinks(activeLink);
+            let activeLink = localStorage.getItem('activeLink');
+            if (!activeLink) {
+                activeLink = "{{ route('admin.dashboard') }}";
             }
+            updateNavLinks(activeLink);
+
         }
 
         function updateNavLinks(currentRoute) {
@@ -175,4 +181,8 @@
             });
         });
     });
+    function clearMenuState() {
+        localStorage.removeItem('openSubmenus');
+        localStorage.removeItem('activeLink');
+    }
 </script>

@@ -12,10 +12,14 @@ class MultiChoiceMany extends Model
     protected $table = 'multichoice_many';
     protected $fillable = [
         'name', 
-        'answers', 
+        'answer', 
         'choices',
     ];
-    public function question()
+    protected $casts = [
+        'answer' => 'array',  // Cast to array for easy handling
+        'choices' => 'array',
+    ];
+    public function questions()
     {
         return $this->morphOne(Question::class, 'questionable');
     }

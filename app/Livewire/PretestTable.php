@@ -22,25 +22,28 @@ class PretestTable extends DataTableComponent
 
     public function builder(): Builder
     {
-        return PretestQuestion::query()
-            ->with(['questions.courses', 'questions.difficulty']) // Load related course and difficulty
-            ->where('pretest_question_id', $this->pretest_question_id); // Optional filtering based on pretest_question_id
+        return PretestQuestion::query()->with(['questions.courses', 'questions.difficulty']); 
     }
 
 
     public function columns(): array
     {
         return [
-            Column::make('Course', 'questions.courses.name')
+            Column::make('Pretest Question ID', 'pretest_question_id')->hideIf(true)
                 ->sortable()
                 ->searchable(),
-
             Column::make('Question', 'questions.question')
                 ->sortable()
                 ->searchable(),
-
-            Column::make('Difficulty', 'questions.difficulty.level')
-                ->sortable(),
+            Column::make('Type', 'questions.questionable_type')
+                ->sortable()
+                ->searchable(),
+            Column::make('Level', 'questions.difficulty.name')
+                ->sortable()
+                ->searchable(),
+            Column::make('Course', 'questions.courses.title')
+                ->sortable()
+                ->searchable(),
         ];
     }
 }

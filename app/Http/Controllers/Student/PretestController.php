@@ -63,8 +63,14 @@ class PretestController extends Controller
 
         $courses = Course::all();
 
-        $questions = Question::where('course_id', $currentCourseId)
-            ->with(['questionable', 'difficulty'])
+        // $questions = Question::where('course_id', $currentCourseId)
+        //     ->with(['questionable', 'difficulty'])
+        //     ->take(5)
+        //     ->get();
+        $questions = PretestQuestion::whereHas('questions.courses', function ($query) use ($currentCourseId) {
+            $query->where('course_id', $currentCourseId);
+        })
+            ->with(['questions.questionable', 'questions.difficulty'])
             ->take(5)
             ->get();
 
@@ -109,7 +115,9 @@ class PretestController extends Controller
     {
         $answers = Session::get('pretest_answers', []);
         $progress = Session::get('pretest_progress');
-        $studentId = Auth::id();
+        $user = Auth::user();
+        $student = $user->userable;
+        $studentId = $student->student_id;
 
         if (!$studentId) {
             Log::warning('Attempt to store pretest attempt without an authenticated user.');
@@ -136,24 +144,28 @@ class PretestController extends Controller
 
                 Log::info('PretestCourse created with ID: ' . $pretestCourse->pretest_course_id);
 
-                $questions = Question::where('course_id', $courseId)->get();
-
+                // $questions = Question::where('course_id', $courseId)->get();
+                $questions = PretestQuestion::whereHas('questions.courses', function ($query) use ($courseId) {
+                    $query->where('course_id', $courseId);
+                })->get();
+                Log::info('PretestQuestions: ' . $questions);
                 foreach ($questions as $question) {
-                    $pretestQuestion = PretestQuestion::create([
-                        'question_id' => $question->question_id,
-                    ]);
+                    // $pretestQuestion = PretestQuestion::create([
+                    //     'question_id' => $question->question_id,
+                    // ]);
 
                     $userAnswer = $answers[$question->question_id] ?? null;
 
-                    $questionModel = $question->questionable_type::find($question->questionable_id);
-                    $correctAnswer = $questionModel->answer ?? null;
+                    $questionModel = $question->questions->questionable;
+                    Log::info('Questionable is : ' . $questionModel);
+                    $correctAnswer = $questionModel->answer;
 
                     $score = $this->calculateScore($userAnswer, $correctAnswer, $questionModel);
                     $totalScore += $score;
 
                     PretestAnswer::create([
                         'pretest_course_id' => $pretestCourse->pretest_course_id,
-                        'pretest_question_id' => $pretestQuestion->pretest_question_id,
+                        'pretest_question_id' => $question->pretest_question_id,
                         'participants_answer' => json_encode($userAnswer),
                         'score' => $score
                     ]);
@@ -213,7 +225,7 @@ class PretestController extends Controller
     {
         if (is_array($correctAnswer)) {
             $userAnswer = is_array($userAnswer) ? $userAnswer : [$userAnswer];
-            
+
             sort($userAnswer);
             sort($correctAnswer);
 
@@ -226,33 +238,47 @@ class PretestController extends Controller
     {
         $studentId = Auth::id();
         $pretest = Pretest::findOrFail($pretestId);
+        Log::info('Pretest found', ['pretest' => $pretest]);
+
         $pretestCourses = $pretest->pretest_courses()->with('courses')->get();
+        Log::info('Pretest Courses', ['pretestCourses' => $pretestCourses]);
 
         $questions = [];
         $answers = [];
 
         foreach ($pretestCourses as $pretestCourse) {
             $courseId = $pretestCourse->course_id;
+            Log::info('Processing Course ID', ['courseId' => $courseId]);
 
-            $courseQuestions = Question::where('course_id', $courseId)
-                ->with(['questionable', 'difficulty'])
-                ->get();
+            // $courseQuestions = Question::where('course_id', $courseId)
+            //     ->with(['questionable', 'difficulty'])
+            //     ->get();
+            // Log::info('Course Questions', ['courseQuestions' => $courseQuestions]);
 
-            $questions[$courseId] = $courseQuestions;
+        
+            // $pretestQuestions = PretestQuestion::whereIn('question_id', $courseQuestions->pluck('question_id'))
+            //     ->whereHas('questions', function ($query) use ($courseId) {
+            //         $query->where('course_id', $courseId);
+            //     })
+            //     ->get();
 
-            $pretestQuestions = PretestQuestion::whereIn('question_id', $courseQuestions->pluck('question_id'))
-                ->whereHas('questions', function ($query) use ($courseId) {
+            $pretestQuestions = PretestQuestion::whereHas('questions.courses', function ($query) use ($courseId) {
                     $query->where('course_id', $courseId);
-                })
-                ->get();
+                })->with('questions')->get();
+            Log::info('Pretest Questions', ['pretestQuestions' => $pretestQuestions]);
+                        
+            $questions[$courseId] = $pretestQuestions;
 
             foreach ($pretestQuestions as $pretestQuestion) {
                 $pretestAnswer = PretestAnswer::where('pretest_question_id', $pretestQuestion->pretest_question_id)
                     ->where('pretest_course_id', $pretestCourse->pretest_course_id)
                     ->first();
+                Log::info('Pretest Answer', ['pretestAnswer' => $pretestAnswer]);
 
                 if ($pretestAnswer) {
                     $participantsAnswer = json_decode($pretestAnswer->participants_answer, true);
+                    Log::info('Participants Answer', ['participantsAnswer' => $participantsAnswer]);
+
                     $answers[$pretestQuestion->question_id] = [
                         'participants_answer' => $participantsAnswer,
                         'score' => $pretestAnswer->score
@@ -260,6 +286,8 @@ class PretestController extends Controller
                 }
             }
         }
+
+        Log::info('Final Answers', ['answers' => $answers]);
 
         return view('student.ui.reviewPretest', [
             'pretest' => $pretest,

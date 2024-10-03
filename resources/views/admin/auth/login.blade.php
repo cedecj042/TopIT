@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="mt-5 text-center">
-                    <a href="{{ route(name: 'login') }}" class="text-dark auth_btn">Login as a Student</a>
+                    <a href="{{ route(name: 'login') }}" class="text-light btn btn-outline-light student-login">Login as a Student</a>
                 </div>
             </div>
         </div>
@@ -55,6 +55,10 @@
             background-color: #E9E9E9;
             border-color: #C9C9C9;
             box-shadow: none;
+        }
+
+        .student-login:hover{
+            color:#0d6efd !important;   
         }
     </style>
 @endsection

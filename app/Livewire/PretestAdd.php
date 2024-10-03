@@ -21,11 +21,8 @@ class PretestAdd extends Component
     {
         // Load all courses
         $this->courses = Course::all();
-        
-        // Load all questions with related difficulty and questionable (polymorphic relations)
         $this->questions = Question::with(['difficulty', 'questionable','courses'])->get();
         $this->difficulties = Difficulty::all();
-        // Initialize an empty collection for selected questions
         $this->selectedQuestions = collect();
     }
 

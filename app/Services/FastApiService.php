@@ -141,5 +141,9 @@ class FastApiService
             ]);
         }
     }
+    public function deleteCourse($courseId)
+    {
+        return Http::delete("{$this->baseUrl}/delete_course/" . $courseId);
+    }
 
 }

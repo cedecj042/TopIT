@@ -6,7 +6,7 @@
 <div class="container-fluid">
     <div class="row">
         @include('admin.shared.admin-sidebar')
-        <main class="col-md-9 ms-sm-auto col-lg-10 px-md-5">
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-5">
             <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-5 pb-2 mt-3 mb-3">
                 <h1 class="h3 fw-semibold m-0">Courses</h1>
                 <div class="btn-toolbar mb-2 mb-md-0 ">

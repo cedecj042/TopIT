@@ -12,11 +12,6 @@
                     {{-- <div
                         class="d-flex justify-content-between flex-column flex-wrap flex-md-nowrap align-items-start p-5 mb-3">
                         --}}
-                        <div class="pt-5">
-                            <a href="{{route('admin.course.index')}}"
-                                class=" d-flex flex-row text-decoration-none align-content-center"><span
-                                    class="material-symbols-outlined">arrow_back</span>Back</a>
-                        </div>
                         <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pb-2">
                             <h3 class="fw-bold">Question Bank</h3>
                             <div class="btn-toolbar mb-2 mb-md-0 ">

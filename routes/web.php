@@ -24,6 +24,10 @@ Route::middleware('guest')->group(function () {
 
     Route::get('/login', [StudentController::class, 'showLoginStudent'])->name('login');
     Route::post('/login', [StudentController::class, 'loginStudent'])->name('student.login');
+
+    Route::get('/admin/login', [AdminController::class, 'showLogin'])->name('admin.login');
+    Route::post('/admin/login', [AdminController::class, 'login']);
+
 });
 
 Route::middleware('auth')->group(function () {
@@ -56,14 +60,12 @@ Route::middleware('student')->group(function () {
 
 // Admin
 Route::prefix('admin')->name('admin.')->group(function () {
-    Route::get('/login', [AdminController::class, 'showLogin'])->name('login');
-    Route::post('/login', [AdminController::class, 'login']);
     Route::post('/store-processed-pdf', [ProcessedPdfController::class, 'store'])->name('store-pdf');
     Route::post('/store-questions', [ProcessQuestionController::class, 'storeQuestions'])->name('store-questions');
 });
 
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
-
+   
     // Dashboard
     Route::get('/dashboard', [AdminController::class, 'showDashboard'])->name('dashboard');
 

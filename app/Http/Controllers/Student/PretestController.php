@@ -63,15 +63,15 @@ class PretestController extends Controller
 
         $courses = Course::all();
 
-        // $questions = Question::where('course_id', $currentCourseId)
-        //     ->with(['questionable', 'difficulty'])
-        //     ->take(5)
-        //     ->get();
+        $questions = Question::where('course_id', $currentCourseId)
+            ->with(['questionable', 'difficulty'])
+            ->take(5)
+            ->get();
+            
         $questions = PretestQuestion::whereHas('questions.courses', function ($query) use ($currentCourseId) {
             $query->where('course_id', $currentCourseId);
         })
             ->with(['questions.questionable', 'questions.difficulty'])
-            ->take(5)
             ->get();
 
         $isLastCourse = $progress['current_course_index'] == count($progress['courses']) - 1;

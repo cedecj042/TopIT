@@ -47,8 +47,8 @@ class DatabaseSeeder extends Seeder
 
         $this->call([
             DifficultySeeder::class,
-            CourseSeeder::class,
-            QuestionSeeder::class,
+            // CourseSeeder::class,
+            // QuestionSeeder::class,
             StudentSeeder::class
         ]);
     }

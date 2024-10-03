@@ -3,11 +3,13 @@
 @section('title', 'Course')
 
 @section('page-content')
-    <div class="container-fluid">
-        <div class="row">
-            @include('student.shared.student-sidebar')
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-5">
-                @include('student.shared.student-navbar')
+<div class="container-fluid">
+    <div class="row">
+        @include('student.shared.student-sidebar')
+        <main class="col-md-9 ms-sm-auto col-lg-10 px-0">
+            @include('student.shared.student-navbar')
+
+            <div class="px-md-5">
                 <div class="d-flex justify-content-between pt-5 pb-2 mt-3 mb-3">
                     <h1 class="h3 fw-semibold">Courses</h1>
                 </div>
@@ -24,19 +26,21 @@
                                         <p>{{$course->description}}</p>
                                     </div>
                                     <div class="px-3 d-flex align-items-center">
-                                        <a class="btn btn-link p-3" href="{{route('student-course-detail',$course->course_id)}}">
+                                        <a class="btn btn-link p-3"
+                                            href="{{route('student-course-detail', $course->course_id)}}">
                                             <i class="h3 bi bi-play-circle-fill"></i>
                                         </a>
                                     </div>
                                 </div>
-                                
+
                             </div>
                         </div>
                     @endforeach
                 </div>
+            </div>
 
 
-            </main>
-        </div>
+        </main>
     </div>
+</div>
 @endsection

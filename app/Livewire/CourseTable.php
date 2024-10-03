@@ -3,6 +3,9 @@
 namespace App\Livewire;
 
 use App\Models\Course;
+use App\Services\FastApiService;
+use Illuminate\Support\Facades\App;
+use Illuminate\Support\Facades\Log;
 use Livewire\Component;
 use Illuminate\Database\Eloquent\Builder;
 use Rappasoft\LaravelLivewireTables\DataTableComponent;
@@ -12,7 +15,7 @@ use Rappasoft\LaravelLivewireTables\Views\Filters\SelectFilter;
 class CourseTable extends DataTableComponent
 {
     protected $model = Course::class;
-
+    
     public function configure(): void
     {
         $this->setPrimaryKey('course_id');
@@ -36,13 +39,30 @@ class CourseTable extends DataTableComponent
                 ->html(),
         ];
     }
-    public function deleteCourse($course_id)
-    {
-        $course = Course::findOrFail($course_id);
-    
-        $course->delete();
-    
-        $this->js = '<script>alert("Course deleted successfully.");</script>';
-    }
+    // public function deleteCourse($course_id)
+    // {
+    //     $course = Course::findOrFail($course_id);
+
+    //     $course->delete();
+
+    //     $this->js = '<script>alert("Course deleted successfully.");</script>';
+    // }
+   public function deleteCourse($course_id)
+   {
+       try {
+           // Check if the course exists in the Laravel database
+           $course = Course::findOrFail($course_id);
+           $fastAPIService = App::make(FastApiService::class);
+           $response = $fastAPIService->deleteCourse($course_id);
+
+           if ($response->successful()) {
+               $course->delete();
+               $this->js = '<script>alert("Course deleted successfully.");</script>';
+           }
+
+       } catch (\Exception $e) {
+           Log::error('Error deleting course: ' . $e->getMessage());
+       }
+   }
 }
 

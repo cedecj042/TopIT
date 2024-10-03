@@ -48,7 +48,7 @@ class ModuleTable extends DataTableComponent
             SelectFilter::make('Course')
                 ->options(Course::pluck('title', 'course_id')->toArray())
                 ->filter(function (Builder $builder, string $value) {
-                    $builder->where('course_id', $value);
+                    $builder->where('modules.course_id', $value);
                 }),
         ];
     }

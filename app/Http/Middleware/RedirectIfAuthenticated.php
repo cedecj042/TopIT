@@ -21,7 +21,7 @@ class RedirectIfAuthenticated
         if (Auth::check()) {
             $user = Auth::user();
             if ($user->userable instanceof Admin) {
-                return redirect('/admin-dashboard');
+                return redirect('/admin/dashboard');
             } elseif ($user->userable instanceof Student) {
                 return redirect('/dashboard');
             }
